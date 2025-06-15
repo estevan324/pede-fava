@@ -1,0 +1,41 @@
+header.wallpaper {
+  position: relative;
+  background-image: url("../images/wallpaper.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  color: #ffffff;
+  padding: 5rem 2rem;
+}
+
+header.wallpaper .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: black;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+header.wallpaper .inner-content {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-card {
+  padding: 2rem;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.nav-card:hover {
+  transform: translateY(-5px);
+}
+
+.nav-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #007bff;
+}
