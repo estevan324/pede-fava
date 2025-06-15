@@ -11,7 +11,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tabelaIngredientesBody = document.getElementById("tabelaIngredientes");
   const totalIngredientesSpan = document.getElementById("totalIngredientes");
 
-  // --- Função para excluir um ingrediente ---
+  const estoqueBaixo = document.getElementById("contadorBaixo");
+  const estoqueNormal = document.getElementById("contadorNormal");
+  const estoqueZerado = document.getElementById("contadorZerado");
+
   async function deleteIngrediente(ingredienteId) {
     if (
       confirm(
@@ -68,6 +71,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       const ingredienteSnapshot = await db.collection("ingredientes").get();
       const ingredientes = [];
 
+      let quantidadeStatusEstoque = {
+        zerado: 0,
+        baixo: 0,
+        normal: 0,
+      };
+
       for (const ingredienteDoc of ingredienteSnapshot.docs) {
         const data = ingredienteDoc.data();
         const ingredienteId = ingredienteDoc.id;
@@ -82,12 +91,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         let statusEstoque = "";
         let statusClass = "";
-        if (estoque <= 5) {
-          statusEstoque = "Baixo";
+
+        if (estoque === 0) {
+          statusEstoque = "Zerado";
           statusClass = "text-danger fw-bold";
+          quantidadeStatusEstoque.zerado++;
+        } else if (estoque > 0 && estoque <= 5) {
+          statusEstoque = "Baixo";
+          statusClass = "text-warning fw-medium";
+          quantidadeStatusEstoque.baixo++;
         } else {
           statusEstoque = "Normal";
           statusClass = "text-success";
+          quantidadeStatusEstoque.normal++;
         }
 
         ingredientes.push({
@@ -99,6 +115,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           statusClass: statusClass,
           timestamp: data.timestamp || null,
         });
+
+        estoqueZerado.textContent = quantidadeStatusEstoque.zerado;
+        estoqueNormal.textContent = quantidadeStatusEstoque.normal;
+        estoqueBaixo.textContent = quantidadeStatusEstoque.baixo;
       }
 
       tabelaIngredientesBody.innerHTML = "";
