@@ -12,4 +12,12 @@ firebase.auth().onAuthStateChanged((user) => {
     loginNav.classList.remove("d-none");
     loginNav.classList.add("d-block");
   }
+
+  // Ocultar valores sensíveis sem login
+  const sensitiveValues = document.querySelectorAll("#sensitive-value");
+  if (!user) {
+    sensitiveValues.forEach((value) => {
+      value.textContent = "-";
+    });
+  }
 });

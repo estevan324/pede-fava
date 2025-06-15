@@ -23,7 +23,7 @@
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
   </head>
   <body>
-    <header id="header"></header>
+    <nav id="navbar"></nav>
     <main class="container">
       <header class="wallpaper rounded mt-4">
         <div class="overlay rounded"></div>
@@ -44,25 +44,27 @@
               <div class="row">
                 <div class="col-md-3">
                   <div class="border-end">
-                    <h4 class="text-success">0</h4>
+                    <h4 class="text-success" id="sensitive-value">0</h4>
                     <small class="text-muted">Receitas Criadas</small>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="border-end">
-                    <h4 class="text-primary">0</h4>
+                    <h4 class="text-primary" id="sensitive-value">0</h4>
                     <small class="text-muted">Pedidos em andamento</small>
                   </div>
                 </div>
 
                 <div class="col-md-3">
                   <div class="border-end">
-                    <h4 class="text-warning">0</h4>
+                    <h4 class="text-warning" id="sensitive-value">0</h4>
                     <small class="text-muted">Itens com Estoque Baixo</small>
                   </div>
                 </div>
                 <div class="col-md-3">
-                  <h4 class="text-info">R$ 0,00</h4>
+                  <h4 class="text-info">
+                    R$ <span id="sensitive-value">0,00</span>
+                  </h4>
                   <small class="text-muted">Valor faturado</small>
                 </div>
               </div>
