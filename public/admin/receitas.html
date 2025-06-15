@@ -17,6 +17,336 @@
   </head>
   <body>
     <nav id="navbar-admin"></nav>
+
+    <div class="container mt-4">
+      <h1>Consulta de Receitas</h1>
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="buscarReceita"
+              placeholder="Buscar por nome da receita..."
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              id="btnBuscarReceita"
+            >
+              <i class="bi bi-search"></i> Buscar
+            </button>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="filtroCategoria">
+            <option value="">Todas as categorias</option>
+            <option value="entrada">Entrada</option>
+            <option value="prato_principal">Prato Principal</option>
+            <option value="sobremesa">Sobremesa</option>
+            <option value="bebida">Bebida</option>
+            <option value="lanche">Lanche</option>
+            <option value="acompanhamento">Acompanhamento</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="ordenarPor">
+            <option value="nome">Ordenar por Nome</option>
+            <option value="categoria">Ordenar por Categoria</option>
+            <option value="tempo">Ordenar por Tempo</option>
+            <option value="custo">Ordenar por Custo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="card-title mb-0">Lista de Receitas</h5>
+          <span class="badge bg-primary" id="totalReceitas">0 receitas</span>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>Nome</th>
+                  <th>Categoria</th>
+                  <th>Tempo (min)</th>
+                  <th>Rendimento</th>
+                  <th>Custo Total</th>
+                  <th>Custo/Porção</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaReceitas">
+                <tr>
+                  <td colspan="7" class="text-center text-muted">
+                    Nenhuma receita cadastrada ainda.
+                    <br />
+                    <a
+                      href="cadastro_receitas.html"
+                      class="btn btn-primary btn-sm mt-2"
+                    >
+                      Cadastrar Primeira Receita
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-3">
+          <div class="card border-primary">
+            <div class="card-body text-center">
+              <h5 class="card-title text-primary">Total de Receitas</h5>
+              <h2 class="text-primary" id="estatisticaTotal">0</h2>
+              <p class="card-text">Receitas cadastradas</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-success">
+            <div class="card-body text-center">
+              <h5 class="card-title text-success">Receita Mais Barata</h5>
+              <h2 class="text-success" id="receitaMaisBarata">R$ 0,00</h2>
+              <p class="card-text">Menor custo por porção</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-warning">
+            <div class="card-body text-center">
+              <h5 class="card-title text-warning">Receita Mais Cara</h5>
+              <h2 class="text-warning" id="receitaMaisCara">R$ 0,00</h2>
+              <p class="card-text">Maior custo por porção</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card border-info">
+            <div class="card-body text-center">
+              <h5 class="card-title text-info">Tempo Médio</h5>
+              <h2 class="text-info" id="tempoMedio">0 min</h2>
+              <p class="card-text">Tempo médio de preparo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para visualizar receita -->
+    <div class="modal fade" id="modalVisualizarReceita" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="tituloReceita">Visualizar Receita</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6>Informações Gerais</h6>
+                <p>
+                  <strong>Descrição:</strong> <span id="descricaoModal"></span>
+                </p>
+                <p>
+                  <strong>Categoria:</strong> <span id="categoriaModal"></span>
+                </p>
+                <p>
+                  <strong>Tempo de Preparo:</strong>
+                  <span id="tempoModal"></span> minutos
+                </p>
+                <p>
+                  <strong>Rendimento:</strong>
+                  <span id="rendimentoModal"></span> porções
+                </p>
+              </div>
+              <div class="col-md-6">
+                <h6>Custos</h6>
+                <p>
+                  <strong>Custo Total:</strong>
+                  <span id="custoTotalModal"></span>
+                </p>
+                <p>
+                  <strong>Custo por Porção:</strong>
+                  <span id="custoPorcaoModal"></span>
+                </p>
+              </div>
+            </div>
+
+            <hr />
+
+            <h6>Ingredientes</h6>
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead class="table-light">
+                  <tr>
+                    <th>Ingrediente</th>
+                    <th>Quantidade</th>
+                    <th>Unidade</th>
+                    <th>Custo</th>
+                  </tr>
+                </thead>
+                <tbody id="ingredientesModal"></tbody>
+              </table>
+            </div>
+
+            <hr />
+
+            <h6>Modo de Preparo</h6>
+            <div
+              id="modoPreparoModal"
+              class="border p-3 bg-light rounded"
+            ></div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Fechar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="editarReceita()"
+            >
+              Editar Receita
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para editar receita -->
+    <div class="modal fade" id="modalEditarReceita" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Receita</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="formEditarReceita">
+              <input type="hidden" id="editarReceitaId" />
+              <div class="mb-3">
+                <label for="editarNomeReceita" class="form-label"
+                  >Nome da Receita</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editarNomeReceita"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editarDescricaoReceita" class="form-label"
+                  >Descrição</label
+                >
+                <textarea
+                  class="form-control"
+                  id="editarDescricaoReceita"
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="editarTempoReceita" class="form-label"
+                      >Tempo de Preparo (min)</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="editarTempoReceita"
+                      min="1"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="editarRendimentoReceita" class="form-label"
+                      >Rendimento (porções)</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="editarRendimentoReceita"
+                      min="1"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label for="editarCategoriaReceita" class="form-label"
+                      >Categoria</label
+                    >
+                    <select
+                      class="form-select"
+                      id="editarCategoriaReceita"
+                      required
+                    >
+                      <option value="entrada">Entrada</option>
+                      <option value="prato_principal">Prato Principal</option>
+                      <option value="sobremesa">Sobremesa</option>
+                      <option value="bebida">Bebida</option>
+                      <option value="lanche">Lanche</option>
+                      <option value="acompanhamento">Acompanhamento</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="editarModoPreparoReceita" class="form-label"
+                  >Modo de Preparo</label
+                >
+                <textarea
+                  class="form-control"
+                  id="editarModoPreparoReceita"
+                  rows="6"
+                  required
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="salvarEdicaoReceita()"
+            >
+              Salvar Alterações
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="../scripts/components.js"></script>
 
     <!-- Bootstrap-->
