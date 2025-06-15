@@ -17,7 +17,272 @@
   </head>
   <body>
     <nav id="navbar-admin"></nav>
+
+    <main class="container mt-4">
+      <div class="row mb-3">
+        <div class="col my-auto">
+          <h4 class="m-0">Estoque</h4>
+        </div>
+        <div class="col-md-3">
+          <button
+            class="btn btn-success w-100"
+            data-bs-toggle="modal"
+            data-bs-target="#modalMovimentacaoEstoque"
+          >
+            <i class="bi bi-plus-circle"></i> Nova Movimentação
+          </button>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Histórico de Movimentações</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead class="table-light">
+                <tr>
+                  <th>Data/Hora</th>
+                  <th>Ingrediente</th>
+                  <th>Tipo</th>
+                  <th>Quantidade</th>
+                  <th>Motivo</th>
+                  <th>Estoque Anterior</th>
+                  <th>Estoque Atual</th>
+                </tr>
+              </thead>
+              <tbody id="historicoMovimentacoes">
+                <tr>
+                  <td colspan="7" class="text-center text-muted">
+                    Nenhuma movimentação registrada
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal fade" id="modalMovimentacaoEstoque" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Nova Movimentação de Estoque</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="formMovimentacaoEstoque">
+              <div class="mb-3">
+                <label for="ingredienteMovimentacao" class="form-label"
+                  >Ingrediente</label
+                >
+                <select
+                  class="form-select"
+                  id="ingredienteMovimentacao"
+                  required
+                >
+                  <option value="">Selecione um ingrediente...</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="tipoMovimentacao" class="form-label"
+                  >Tipo de Movimentação</label
+                >
+                <select class="form-select" id="tipoMovimentacao" required>
+                  <option value="">Selecione...</option>
+                  <option value="entrada">Entrada (Compra/Recebimento)</option>
+                  <option value="saida">Saída (Uso/Perda)</option>
+                  <option value="ajuste">Ajuste de Inventário</option>
+                </select>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="quantidadeMovimentacao" class="form-label"
+                      >Quantidade</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="quantidadeMovimentacao"
+                      step="0.01"
+                      min="0"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="unidadeMovimentacao" class="form-label"
+                      >Unidade</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="unidadeMovimentacao"
+                      readonly
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="motivoMovimentacao" class="form-label"
+                  >Motivo/Observação</label
+                >
+                <textarea
+                  class="form-control"
+                  id="motivoMovimentacao"
+                  rows="3"
+                  placeholder="Descreva o motivo da movimentação..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="alert alert-info">
+                <strong>Estoque Atual:</strong>
+                <span id="estoqueAtualInfo">-</span><br />
+                <strong>Novo Estoque:</strong>
+                <span id="novoEstoqueInfo">-</span>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="salvarMovimentacao()"
+            >
+              Registrar Movimentação
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para ajuste rápido de estoque -->
+    <div class="modal fade" id="modalAjusteRapido" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Ajuste Rápido de Estoque</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="formAjusteRapido">
+              <input type="hidden" id="ingredienteAjusteId" />
+              <div class="mb-3">
+                <label for="nomeIngredienteAjuste" class="form-label"
+                  >Ingrediente</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nomeIngredienteAjuste"
+                  readonly
+                />
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="estoqueAtualAjuste" class="form-label"
+                      >Estoque Atual</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="estoqueAtualAjuste"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="novoEstoqueAjuste" class="form-label"
+                      >Novo Estoque</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="novoEstoqueAjuste"
+                      step="0.01"
+                      min="0"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="motivoAjuste" class="form-label"
+                  >Motivo do Ajuste</label
+                >
+                <textarea
+                  class="form-control"
+                  id="motivoAjuste"
+                  rows="3"
+                  placeholder="Descreva o motivo do ajuste..."
+                  required
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning"
+              onclick="salvarAjusteRapido()"
+            >
+              Ajustar Estoque
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="../scripts/components.js"></script>
+    <script src="../scripts/admin/estoque.js"></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+      crossorigin="anonymous"
+    ></script>
+
+    <script defer src="/__/firebase/11.9.0/firebase-app-compat.js"></script>
+    <script defer src="/__/firebase/11.9.0/firebase-auth-compat.js"></script>
+    <script
+      defer
+      src="https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore-compat.js"
+    ></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
 
     <!-- Bootstrap-->
     <script

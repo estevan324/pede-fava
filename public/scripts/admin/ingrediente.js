@@ -196,7 +196,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         ingredienteId: ingredienteRef.id,
         quantidade: parseFloat(estoqueAtualInput.value),
         dataMovimentacao: firebase.firestore.FieldValue.serverTimestamp(),
-        observacoes: "Entrada inicial ao cadastrar ingrediente",
+        tipo: "entrada",
+        motivo: "-",
+        estoqueAnterior: 0,
+        estoqueAtual: parseFloat(estoqueAtualInput.value),
       });
 
       alert("Ingrediente salvo com sucesso!");
