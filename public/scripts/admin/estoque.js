@@ -2,23 +2,42 @@ document.addEventListener("DOMContentLoaded", async () => {
   const db = firebase.firestore();
 
   const tabelaMovimentacoes = document.getElementById("historicoMovimentacoes");
+  const btnRegistrarMovimentacao = document.getElementById(
+    "btnRegistrarMovimentacao"
+  );
+  const formMovimentacaoEstoque = document.getElementById(
+    "formMovimentacaoEstoque"
+  );
+
+  const ingredientesSelect = document.getElementById("ingredienteMovimentacao");
+
+  let movimentacoes = [];
+  let ingredientes = [];
 
   async function getAndDisplayEstoque() {
+    movimentacoes = [];
+    ingredientes = [];
+
     const allMovimentacoesSnapshot = await db
       .collection("movimentacoesEstoque")
       .get();
 
     const allIngredientesSnapshot = await db.collection("ingredientes").get();
-    const ingredientes = allIngredientesSnapshot.docs.map((ingrediente) => {
+    allIngredientesSnapshot.docs.forEach((ingrediente) => {
       const i = ingrediente.data();
 
-      return {
+      const option = document.createElement("option");
+      option.value = ingrediente.id;
+      option.label = i.nome;
+
+      ingredientesSelect.add(option);
+
+      ingredientes.push({
         id: ingrediente.id,
-        nome: i.nome,
-      };
+        ...i,
+      });
     });
 
-    const movimentacoes = [];
     for (const movimentacaoDoc of allMovimentacoesSnapshot.docs) {
       const data = movimentacaoDoc.data();
 
@@ -47,6 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         tipo: data.tipo,
         tipoClass: tipoClass,
         ingrediente: ingrediente.nome,
+        ingredienteId: ingrediente.id,
       });
     }
 
@@ -81,4 +101,74 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   await getAndDisplayEstoque();
+
+  ingredientesSelect.addEventListener("change", (e) => {
+    const ingrediente = ingredientes.find((i) => i.id === e.target.value);
+
+    const unidadeMovimentacaoInput = document.getElementById(
+      "unidadeMovimentacao"
+    );
+
+    unidadeMovimentacaoInput.value = ingrediente.unidadeMedida;
+  });
+
+  btnRegistrarMovimentacao.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    if (!formMovimentacaoEstoque.checkValidity()) {
+      formMovimentacaoEstoque.classList.add("was-validated");
+      return;
+    }
+
+    const ultimaMovimentacao = movimentacoes.find(
+      (m) => m.ingredienteId === ingredientesSelect.value
+    );
+
+    const estoqueAtual = ultimaMovimentacao.estoqueAtual;
+    const tipoMovimentacaoInput = document.getElementById("tipoMovimentacao");
+    const motivoInput = document.getElementById("motivoMovimentacao");
+    const quantidadeInput = document.getElementById("quantidadeMovimentacao");
+
+    let quantidadeNova = 0;
+
+    switch (tipoMovimentacaoInput.value) {
+      case "saida":
+        quantidadeNova = estoqueAtual - parseFloat(quantidadeInput.value);
+        break;
+      case "entrada":
+        quantidadeNova = estoqueAtual + parseFloat(quantidadeInput.value);
+        break;
+      default:
+        quantidadeNova = parseFloat(quantidadeInput.value);
+    }
+
+    try {
+      await db.collection("movimentacoesEstoque").add({
+        ingredienteId: ultimaMovimentacao.ingredienteId,
+        quantidade: quantidadeInput.value,
+        dataMovimentacao: firebase.firestore.FieldValue.serverTimestamp(),
+        tipo: tipoMovimentacaoInput.value,
+        motivo: motivoInput.value,
+        estoqueAnterior: estoqueAtual,
+        estoqueAtual: quantidadeNova,
+      });
+
+      alert("Movimentação salva com sucesso!");
+
+      formMovimentacaoEstoque.reset();
+      formMovimentacaoEstoque.classList.remove("was-validated");
+      const modalElement = document.getElementById("modalMovimentacaoEstoque");
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+      }
+
+      await getAndDisplayEstoque();
+    } catch (e) {
+      console.error("Erro ao adicionar documento: ", e);
+      alert(
+        "Erro ao salvar a movimentação. Verifique o console para mais detalhes."
+      );
+    }
+  });
 });

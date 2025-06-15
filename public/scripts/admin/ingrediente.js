@@ -84,10 +84,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const movimentacoesDoIngrediente =
           movimentacoesPorIngrediente.get(ingredienteId) || [];
 
-        let estoque = 0;
-        movimentacoesDoIngrediente.forEach((movData) => {
-          estoque += movData.quantidade || 0;
-        });
+        movimentacoesDoIngrediente.sort(
+          (a, b) => (b.dataMovimentacao || 0) - (a.dataMovimentacao || 0)
+        );
+
+        let estoque = movimentacoesDoIngrediente[0].estoqueAtual;
 
         let statusEstoque = "";
         let statusClass = "";
