@@ -88,7 +88,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           (a, b) => (b.dataMovimentacao || 0) - (a.dataMovimentacao || 0)
         );
 
-        let estoque = movimentacoesDoIngrediente[0].estoqueAtual;
+        let estoque =
+          movimentacoesDoIngrediente.length > 0
+            ? movimentacoesDoIngrediente[0].estoqueAtual
+            : 0;
 
         let statusEstoque = "";
         let statusClass = "";

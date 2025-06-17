@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       (m) => m.ingredienteId === ingredientesSelect.value
     );
 
-    const estoqueAtual = ultimaMovimentacao.estoqueAtual;
+    const estoqueAtual = ultimaMovimentacao?.estoqueAtual || 0;
     const tipoMovimentacaoInput = document.getElementById("tipoMovimentacao");
     const motivoInput = document.getElementById("motivoMovimentacao");
     const quantidadeInput = document.getElementById("quantidadeMovimentacao");
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       await db.collection("movimentacoesEstoque").add({
-        ingredienteId: ultimaMovimentacao.ingredienteId,
+        ingredienteId: ingredientesSelect.value,
         quantidade: quantidadeInput.value,
         dataMovimentacao: firebase.firestore.FieldValue.serverTimestamp(),
         tipo: tipoMovimentacaoInput.value,
