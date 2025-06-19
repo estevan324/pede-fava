@@ -171,4 +171,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
     }
   });
+
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.href = "/pages/login.html";
+    }
+  });
 });

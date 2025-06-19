@@ -1,15 +1,14 @@
 firebase.auth().onAuthStateChanged((user) => {
   const loginNav = document.getElementById("login");
-  const welcomeNav = document.getElementById("boas-vindas");
+  const adminNav = document.getElementById("admin");
 
   if (user) {
-    welcomeNav.classList.remove("d-none");
-    welcomeNav.classList.add("d-block");
+    loginNav?.classList.add("d-none");
+    adminNav?.classList.remove("d-none");
   } else {
-    loginNav.classList.remove("d-none");
-    loginNav.classList.add("d-block");
+    adminNav?.classList.add("d-none");
+    loginNav?.classList.remove("d-none");
   }
-
   // Ocultar valores sensíveis sem login
   const sensitiveValues = document.querySelectorAll("#sensitive-value");
   if (!user) {
