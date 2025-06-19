@@ -1,4 +1,6 @@
-const isRoot = window.location.pathname === "/" || window.location.pathname.endsWith("index.html");
+const isRoot =
+  window.location.pathname === "/" ||
+  window.location.pathname.endsWith("index.html");
 const prefix = isRoot ? "" : "../";
 
 fetch(`${prefix}components/navbar.html`)
@@ -24,4 +26,13 @@ fetch(`${prefix}components/footer.html`)
 
 function navigate(page) {
   window.location.href = page;
+}
+
+function logOut() {
+  firebase
+    .auth()
+    .signOut()
+    .then(() => {
+      window.location.href = "/";
+    });
 }
