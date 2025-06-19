@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           .where("ingredienteId", "==", ingredienteId)
           .get();
 
-        const batch = db.batch(); // Usar um batch para exclusões múltiplas
+        const batch = db.batch();
         movimentacoesSnapshot.forEach((doc) => {
           batch.delete(doc.ref);
         });
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert(
           "Ingrediente e suas movimentações de estoque foram excluídos com sucesso!"
         );
-        await getAndDisplayIngredientes(); // Atualizar a tabela após a exclusão
+        await getAndDisplayIngredientes();
       } catch (error) {
         console.error("Erro ao excluir ingrediente:", error);
         alert(
@@ -157,10 +157,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <tr>
                     <td colspan="8" class="text-center text-muted">
                         Nenhum ingrediente cadastrado ainda.
-                        <br>
-                        <a href="cadastro_ingredientes.html" class="btn btn-primary btn-sm mt-2">
-                            Cadastrar Primeiro Ingrediente
-                        </a>
                     </td>
                 </tr>
             `;
