@@ -174,6 +174,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   firebase.auth().onAuthStateChanged((user) => {
     if (!user) {
+      localStorage.setItem("backPage", "/admin/estoque.html");
       window.location.href = "/pages/login.html";
     }
   });

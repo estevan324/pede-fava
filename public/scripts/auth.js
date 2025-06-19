@@ -16,9 +16,7 @@ createUserButton.addEventListener("click", function () {
   firebase
     .auth()
     .createUserWithEmailAndPassword(emailInput.value, passwordInput.value)
-    .then(() => {
-      window.location.href = "/";
-    })
+    .then(() => backToPage())
     .catch(function (error) {
       console.error(error.code);
       console.error(error.message);
@@ -26,14 +24,11 @@ createUserButton.addEventListener("click", function () {
     });
 });
 
-// Autenticar com E-mail e Senha
 authEmailPassButton.addEventListener("click", function () {
   firebase
     .auth()
     .signInWithEmailAndPassword(emailInput.value, passwordInput.value)
-    .then(() => {
-      window.location.href = "/";
-    })
+    .then(() => backToPage())
     .catch(function (error) {
       console.error(error.code);
       console.error(error.message);
@@ -41,18 +36,25 @@ authEmailPassButton.addEventListener("click", function () {
     });
 });
 
-// Autenticar com Google
 authGoogleButton.addEventListener("click", function () {
   // Providers
   var provider = new firebase.auth.GoogleAuthProvider();
   firebase
     .auth()
     .signInWithPopup(provider)
-    .then(() => {
-      window.location.href = "/";
-    })
+    .then(() => backToPage())
     .catch(function (error) {
       console.log(error);
       alert("Falha na autenticação");
     });
 });
+
+function backToPage() {
+  let backPage = localStorage.getItem("backPage");
+  if (backPage !== null) {
+    localStorage.removeItem("backPage");
+    window.location.href = backPage;
+  } else {
+    window.location.href = "/";
+  }
+}
