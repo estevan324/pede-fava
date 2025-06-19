@@ -1,19 +1,25 @@
-fetch("../components/navbar.html")
+const isRoot = window.location.pathname === "/" || window.location.pathname.endsWith("index.html");
+const prefix = isRoot ? "" : "../";
+
+fetch(`${prefix}components/navbar.html`)
   .then((res) => res.text())
   .then((html) => {
-    document.getElementById("navbar").innerHTML = html;
+    const el = document.getElementById("navbar");
+    if (el) el.innerHTML = html;
   });
 
-fetch("../components/navbar-admin.html")
+fetch(`${prefix}components/navbar-admin.html`)
   .then((res) => res.text())
   .then((html) => {
-    document.getElementById("navbar-admin").innerHTML = html;
+    const el = document.getElementById("navbar-admin");
+    if (el) el.innerHTML = html;
   });
 
-fetch("../components/footer.html")
+fetch(`${prefix}components/footer.html`)
   .then((res) => res.text())
   .then((html) => {
-    document.getElementById("footer").innerHTML = html;
+    const el = document.getElementById("footer");
+    if (el) el.innerHTML = html;
   });
 
 function navigate(page) {
