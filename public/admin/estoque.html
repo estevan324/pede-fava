@@ -29,7 +29,7 @@
             data-bs-toggle="modal"
             data-bs-target="#modalMovimentacaoEstoque"
           >
-            <i class="bi bi-plus-circle"></i> Nova Movimentação
+            Nova Movimentação
           </button>
         </div>
       </div>
@@ -54,8 +54,10 @@
               </thead>
               <tbody id="historicoMovimentacoes">
                 <tr>
-                  <td colspan="7" class="text-center text-muted">
-                    Nenhuma movimentação registrada
+                  <td colspan="7" class="text-center text-muted py-5">
+                    <div class="spinner-border text-dark" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
                   </td>
                 </tr>
               </tbody>

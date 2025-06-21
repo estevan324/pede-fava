@@ -119,9 +119,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else {
         tabelaClientesBody.innerHTML = `
                 <tr>
-                    <td colspan="8" class="text-center text-muted">
-                        Nenhum cliente cadastrado ainda.
-                    </td>
+                  <td colspan="4" class="text-center text-muted">
+                    Nenhum cliente cadastrado
+                  </td>
                 </tr>
             `;
       }

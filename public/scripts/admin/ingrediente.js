@@ -164,9 +164,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else {
         tabelaIngredientesBody.innerHTML = `
                 <tr>
-                    <td colspan="8" class="text-center text-muted">
-                        Nenhum ingrediente cadastrado ainda.
-                    </td>
+                  <td colspan="6" class="text-center text-muted">
+                    Nenhum ingrediente cadastrado
+                  </td>
                 </tr>
             `;
       }
