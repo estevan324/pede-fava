@@ -56,6 +56,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  const componentEstoqueInicial = document.getElementById(
+    "componentEstoqueInicial"
+  );
   async function openModalEdit(id) {
     formIngrediente.classList.remove("was-validated");
     formIngrediente.reset();
@@ -67,6 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     unidadeMedidaSelect.value = ingredienteAtual?.unidadeMedida || "";
     estoqueMinimoInput.value = ingredienteAtual?.estoqueMinimo || "";
     estoqueAtualInput.removeAttribute("required");
+    componentEstoqueInicial.classList.add("d-none");
 
     const modalElement = document.getElementById("cadastrarIngrediente");
     const modal = new bootstrap.Modal(modalElement);
@@ -76,6 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("openModalCadastro").addEventListener("click", () => {
     tituloFormulario.textContent = "Cadastro de ingrediente";
     ingredienteAtual = null;
+    componentEstoqueInicial.classList.remove("d-none");
 
     formIngrediente.classList.remove("was-validated");
     formIngrediente.reset();
