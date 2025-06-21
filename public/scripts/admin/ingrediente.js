@@ -16,7 +16,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const estoqueNormal = document.getElementById("contadorNormal");
   const estoqueZerado = document.getElementById("contadorZerado");
 
+  const tituloFormulario = document.getElementById("tituloFormulario");
+
   let ingredientes = [];
+  let ingredienteAtual = null;
 
   async function deleteIngrediente(ingredienteId) {
     if (
@@ -52,6 +55,31 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   }
+
+  async function openModalEdit(id) {
+    formIngrediente.classList.remove("was-validated");
+    formIngrediente.reset();
+
+    tituloFormulario.textContent = "Edição de ingrediente";
+    ingredienteAtual = ingredientes.find((i) => i.id === id);
+
+    nomeInput.value = ingredienteAtual?.nome || "";
+    unidadeMedidaSelect.value = ingredienteAtual?.unidadeMedida || "";
+    estoqueMinimoInput.value = ingredienteAtual?.estoqueMinimo || "";
+    estoqueAtualInput.removeAttribute("required");
+
+    const modalElement = document.getElementById("cadastrarIngrediente");
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+  }
+
+  document.getElementById("openModalCadastro").addEventListener("click", () => {
+    tituloFormulario.textContent = "Cadastro de ingrediente";
+    ingredienteAtual = null;
+
+    formIngrediente.classList.remove("was-validated");
+    formIngrediente.reset();
+  });
 
   async function getAndDisplayIngredientes() {
     try {
@@ -148,9 +176,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             4
           ).innerHTML = `<span class="${ingrediente.statusClass}">${ingrediente.status}</span>`;
 
-          const actionsCell = row.insertCell(4);
+          const actionsCell = row.insertCell(5);
           actionsCell.innerHTML = `
-            <button class="btn btn-sm btn-info me-2">Editar</button>
+            <button class="btn btn-sm btn-warning me-2 btn-editar" data-id="${ingrediente.id}">Editar</button>
             <button class="btn btn-sm btn-danger btn-excluir" data-id="${ingrediente.id}">Excluir</button>
           `;
 
@@ -158,6 +186,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             .querySelector(".btn-excluir")
             .addEventListener("click", () => {
               deleteIngrediente(ingrediente.id);
+            });
+
+          actionsCell
+            .querySelector(".btn-editar")
+            .addEventListener("click", () => {
+              openModalEdit(ingrediente.id);
             });
         });
       } else {
@@ -195,22 +229,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const ingredienteRef = await db.collection("ingredientes").add({
-        nome,
-        unidadeMedida,
-        estoqueMinimo,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+      let ingredienteRef;
+      if (ingredienteAtual) {
+        ingredienteRef = db.collection("ingredientes").doc(ingredienteAtual.id);
 
-      db.collection("movimentacoesEstoque").add({
-        ingredienteId: ingredienteRef.id,
-        quantidade: parseFloat(estoqueAtualInput.value),
-        dataMovimentacao: firebase.firestore.FieldValue.serverTimestamp(),
-        tipo: "entrada",
-        motivo: "-",
-        estoqueAnterior: 0,
-        estoqueAtual: parseFloat(estoqueAtualInput.value),
-      });
+        await ingredienteRef.update({
+          nome,
+          unidadeMedida,
+          estoqueMinimo,
+        });
+      } else {
+        ingredienteRef = await db.collection("ingredientes").add({
+          nome,
+          unidadeMedida,
+          estoqueMinimo,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+        db.collection("movimentacoesEstoque").add({
+          ingredienteId: ingredienteRef.id,
+          quantidade: parseFloat(estoqueAtualInput.value),
+          dataMovimentacao: firebase.firestore.FieldValue.serverTimestamp(),
+          tipo: "entrada",
+          motivo: "-",
+          estoqueAnterior: 0,
+          estoqueAtual: parseFloat(estoqueAtualInput.value),
+        });
+      }
 
       alert("Ingrediente salvo com sucesso!");
 
@@ -224,7 +269,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       await getAndDisplayIngredientes();
     } catch (e) {
-      console.error("Erro ao adicionar documento: ", e);
+      console.error("Erro ao salvar documento: ", e);
       alert(
         "Erro ao salvar o ingrediente. Verifique o console para mais detalhes."
       );
