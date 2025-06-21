@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const nomeInput = document.getElementById("nome");
   const unidadeMedidaSelect = document.getElementById("unidadeMedida");
   const estoqueAtualInput = document.getElementById("estoqueAtual");
+  const estoqueMinimoInput = document.getElementById("estoqueMinimo");
 
   const btnSalvarIngrediente = document.getElementById("btnSalvarIngrediente");
 
@@ -14,6 +15,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const estoqueBaixo = document.getElementById("contadorBaixo");
   const estoqueNormal = document.getElementById("contadorNormal");
   const estoqueZerado = document.getElementById("contadorZerado");
+
+  let ingredientes = [];
 
   async function deleteIngrediente(ingredienteId) {
     if (
@@ -52,6 +55,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function getAndDisplayIngredientes() {
     try {
+      ingredientes = [];
+
       const allMovimentacoesSnapshot = await db
         .collection("movimentacoesEstoque")
         .get();
@@ -69,7 +74,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       const ingredienteSnapshot = await db.collection("ingredientes").get();
-      const ingredientes = [];
 
       let quantidadeStatusEstoque = {
         zerado: 0,
@@ -96,11 +100,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         let statusEstoque = "";
         let statusClass = "";
 
+        const estoqueMinimo = data?.estoqueMinimo || 5;
+
         if (estoque === 0) {
           statusEstoque = "Zerado";
           statusClass = "text-danger fw-bold";
           quantidadeStatusEstoque.zerado++;
-        } else if (estoque > 0 && estoque <= 5) {
+        } else if (estoque > 0 && estoque < estoqueMinimo) {
           statusEstoque = "Baixo";
           statusClass = "text-warning fw-medium";
           quantidadeStatusEstoque.baixo++;
@@ -114,6 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           id: ingredienteId,
           nome: data.nome,
           unidadeMedida: data.unidadeMedida,
+          estoqueMinimo: data?.estoqueMinimo || "-",
           estoqueAtual: estoque,
           status: statusEstoque,
           statusClass: statusClass,
@@ -136,8 +143,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           row.insertCell(0).textContent = ingrediente.nome;
           row.insertCell(1).textContent = ingrediente.unidadeMedida;
           row.insertCell(2).textContent = ingrediente.estoqueAtual;
+          row.insertCell(3).textContent = ingrediente.estoqueMinimo;
           row.insertCell(
-            3
+            4
           ).innerHTML = `<span class="${ingrediente.statusClass}">${ingrediente.status}</span>`;
 
           const actionsCell = row.insertCell(4);
@@ -179,16 +187,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const nome = nomeInput.value;
     const unidadeMedida = unidadeMedidaSelect.value;
+    const estoqueMinimo = estoqueMinimoInput.value;
 
-    if (!nome || !unidadeMedida) {
+    if (!nome || !unidadeMedida || !estoqueMinimo) {
       alert("Por favor, preencha todos os campos.");
       return;
     }
 
     try {
       const ingredienteRef = await db.collection("ingredientes").add({
-        nome: nome,
-        unidadeMedida: unidadeMedida,
+        nome,
+        unidadeMedida,
+        estoqueMinimo,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
 

@@ -85,6 +85,7 @@
                   <th>Nome</th>
                   <th>Unidade</th>
                   <th>Estoque Atual</th>
+                  <th>Estoque Mínimo</th>
                   <th>Status</th>
                   <th>Ações</th>
                 </tr>
@@ -160,6 +161,18 @@
                   type="number"
                   class="form-control"
                   id="estoqueAtual"
+                  min="0"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="estoqueMinimo" class="form-label"
+                  >Estoque Mínimo</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="estoqueMinimo"
                   min="0"
                   required
                 />
