@@ -11,12 +11,41 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tabelaClientesBody = document.getElementById("tabelaClientes");
   const totalClientesSpan = document.getElementById("totalClientes");
 
+  const tituloFormulario = document.getElementById("tituloFormulario");
+
   firebase.auth().onAuthStateChanged((user) => {
     if (!user) {
       localStorage.setItem("backPage", "/admin/clientes.html");
       window.location.href = "/pages/login.html";
     }
   });
+
+  let clientes = [];
+  let clienteAtual = null;
+
+  document.getElementById("openModalCadastro").addEventListener("click", () => {
+    tituloFormulario.textContent = "Cadastro de cliente";
+
+    formCliente.reset();
+    formCliente.classList.remove("was-validated");
+  });
+
+  function openModalEdicao(id) {
+    tituloFormulario.textContent = "Edição de cliente";
+
+    formCliente.reset();
+    formCliente.classList.remove("was-validated");
+
+    clienteAtual = clientes.find((c) => c.id === id);
+
+    nomeInput.value = clienteAtual?.nome || "";
+    telefoneInput.value = clienteAtual?.telefone || "";
+    emailInput.value = clienteAtual?.email || "";
+
+    const modalElement = document.getElementById("cadastrarClientes");
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+  }
 
   async function deleteCliente(clienteId) {
     if (confirm("Tem certeza que deseja excluir este cliente?")) {
@@ -41,8 +70,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function getAndDisplayClientes() {
     try {
+      clientes = [];
       const clientesSnapshot = await db.collection("clientes").get();
-      const clientes = [];
 
       for (const clienteDoc of clientesSnapshot.docs) {
         const data = clienteDoc.data();
@@ -71,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           const actionsCell = row.insertCell(3);
           actionsCell.innerHTML = `
-            <button class="btn btn-sm btn-info me-2">Editar</button>
+            <button class="btn btn-sm btn-info me-2 btn-editar" data-id="${cliente.id}">Editar</button>
             <button class="btn btn-sm btn-danger btn-excluir" data-id="${cliente.id}">Excluir</button>
           `;
 
@@ -79,6 +108,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             .querySelector(".btn-excluir")
             .addEventListener("click", () => {
               deleteCliente(cliente.id);
+            });
+
+          actionsCell
+            .querySelector(".btn-editar")
+            .addEventListener("click", () => {
+              openModalEdicao(cliente.id);
             });
         });
       } else {
@@ -116,12 +151,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      await db.collection("clientes").add({
-        nome,
-        email,
-        telefone,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+      if (clienteAtual) {
+        let clienteRef = db.collection("clientes").doc(clienteAtual.id);
+
+        await clienteRef.update({
+          nome,
+          email,
+          telefone,
+        });
+      } else {
+        await db.collection("clientes").add({
+          nome,
+          email,
+          telefone,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      }
 
       alert("Cliente salvo com sucesso!");
 
@@ -135,7 +180,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       await getAndDisplayClientes();
     } catch (e) {
-      console.error("Erro ao adicionar documento: ", e);
+      console.error("Erro ao salvar documento: ", e);
       alert(
         "Erro ao salvar o cliente. Verifique o console para mais detalhes."
       );
