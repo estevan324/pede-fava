@@ -1,3 +1,5 @@
+import { getEstoqueIngrediente } from "../common.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const db = firebase.firestore();
 
@@ -88,25 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function getAndDisplayIngredientes() {
     try {
-      ingredientes = [];
-
-      const allMovimentacoesSnapshot = await db
-        .collection("movimentacoesEstoque")
-        .get();
-      const movimentacoesPorIngrediente = new Map();
-
-      allMovimentacoesSnapshot.forEach((movDoc) => {
-        const data = movDoc.data();
-        const ingredienteId = data.ingredienteId;
-        if (ingredienteId) {
-          if (!movimentacoesPorIngrediente.has(ingredienteId)) {
-            movimentacoesPorIngrediente.set(ingredienteId, []);
-          }
-          movimentacoesPorIngrediente.get(ingredienteId).push(data);
-        }
-      });
-
-      const ingredienteSnapshot = await db.collection("ingredientes").get();
+      ingredientes = await getEstoqueIngrediente(db);
 
       let quantidadeStatusEstoque = {
         zerado: 0,
@@ -114,26 +98,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         normal: 0,
       };
 
-      for (const ingredienteDoc of ingredienteSnapshot.docs) {
-        const data = ingredienteDoc.data();
-        const ingredienteId = ingredienteDoc.id;
-
-        const movimentacoesDoIngrediente =
-          movimentacoesPorIngrediente.get(ingredienteId) || [];
-
-        movimentacoesDoIngrediente.sort(
-          (a, b) => (b.dataMovimentacao || 0) - (a.dataMovimentacao || 0)
-        );
-
-        let estoque =
-          movimentacoesDoIngrediente.length > 0
-            ? movimentacoesDoIngrediente[0].estoqueAtual
-            : 0;
-
+      for (let ingrediente of ingredientes) {
         let statusEstoque = "";
         let statusClass = "";
 
-        const estoqueMinimo = data?.estoqueMinimo || 5;
+        const estoqueMinimo = ingrediente?.estoqueMinimo || 5;
+        const estoque = ingrediente.estoqueAtual;
 
         if (estoque === 0) {
           statusEstoque = "Zerado";
@@ -149,21 +119,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           quantidadeStatusEstoque.normal++;
         }
 
-        ingredientes.push({
-          id: ingredienteId,
-          nome: data.nome,
-          unidadeMedida: data.unidadeMedida,
-          estoqueMinimo: data?.estoqueMinimo || "-",
-          estoqueAtual: estoque,
-          status: statusEstoque,
-          statusClass: statusClass,
-          timestamp: data.timestamp || null,
-        });
-
-        estoqueZerado.textContent = quantidadeStatusEstoque.zerado;
-        estoqueNormal.textContent = quantidadeStatusEstoque.normal;
-        estoqueBaixo.textContent = quantidadeStatusEstoque.baixo;
+        ingrediente.status = statusEstoque;
+        ingrediente.statusClass = statusClass;
       }
+
+      estoqueBaixo.textContent = quantidadeStatusEstoque.baixo;
+      estoqueNormal.textContent = quantidadeStatusEstoque.normal;
+      estoqueZerado.textContent = quantidadeStatusEstoque.zerado;
 
       tabelaIngredientesBody.innerHTML = "";
       totalIngredientesSpan.innerHTML = `${ingredientes.length} ingredientes`;

@@ -16,11 +16,6 @@
       integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
       crossorigin="anonymous"
     />
-
-    <!-- Firebase -->
-    <script defer src="/__/firebase/11.9.0/firebase-app-compat.js"></script>
-    <script defer src="/__/firebase/11.9.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
   </head>
   <body>
     <nav id="navbar"></nav>
@@ -44,27 +39,27 @@
               <div class="row">
                 <div class="col-md-3">
                   <div class="border-end">
-                    <h4 class="text-success" id="sensitive-value">0</h4>
+                    <h4 class="text-success sensitive-value">0</h4>
                     <small class="text-muted">Receitas Criadas</small>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="border-end">
-                    <h4 class="text-primary" id="sensitive-value">0</h4>
+                    <h4 class="text-primary sensitive-value">0</h4>
                     <small class="text-muted">Pedidos em andamento</small>
                   </div>
                 </div>
 
                 <div class="col-md-3">
                   <div class="border-end">
-                    <h4 class="text-warning" id="sensitive-value">0</h4>
+                    <h4 class="text-warning sensitive-value" id="estoqueBaixo">
+                      0
+                    </h4>
                     <small class="text-muted">Itens com Estoque Baixo</small>
                   </div>
                 </div>
                 <div class="col-md-3">
-                  <h4 class="text-info">
-                    R$ <span id="sensitive-value">0,00</span>
-                  </h4>
+                  <h4 class="text-info sensitive-value">R$ 0,00</h4>
                   <small class="text-muted">Valor faturado</small>
                 </div>
               </div>
@@ -118,7 +113,17 @@
     <footer id="footer"></footer>
     <!-- Meus imports-->
     <script src="scripts/app.js" type="module"></script>
+    <script src="scripts/admin/index.js" type="module"></script>
     <script src="scripts/components.js"></script>
+
+    <!-- Firebase -->
+    <script defer src="/__/firebase/11.9.0/firebase-app-compat.js"></script>
+    <script defer src="/__/firebase/11.9.0/firebase-auth-compat.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+    <script
+      defer
+      src="https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore-compat.js"
+    ></script>
 
     <!-- Bootstrap-->
     <script
