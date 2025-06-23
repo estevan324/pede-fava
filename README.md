@@ -12,8 +12,6 @@ O **Pede Fava** surge como uma alternativa **intuitiva e acessível**, pensada p
 
 - Receitas
 - Estoque
-- Custos
-- Preços
 - Pedidos
 - Clientes
 
@@ -30,11 +28,6 @@ O **Pede Fava** surge como uma alternativa **intuitiva e acessível**, pensada p
 - Registre seus ingredientes com facilidade.
 - Acompanhe o status: **normal**, **baixo** ou **zerado**.
 - Consulte o histórico de movimentações para evitar desperdícios e compras desnecessárias.
-
-### 💰 Gestão Financeira Simplificada
-- Calcule automaticamente o **custo exato** de cada produto.
-- Precifique corretamente.
-- Visualize sua **margem de lucro**.
 
 ### 🧾 Gestão de Pedidos e Clientes
 - Organize seus pedidos em andamento, entregues e pendentes.
