@@ -11,23 +11,25 @@
     <link rel="stylesheet" href="../css/style.css" />
   </head>
   <body>
-    <nav id="navbar-admin"></nav>
+    <header>
+      <nav id="navbar-admin" aria-label="Navegação Principal do Painel"></nav>
+    </header>
 
-    <div class="container mt-4">
+    <main class="container mt-4">
       <h1 class="mb-4">Cadastro de Receitas</h1>
 
       <div class="row">
-        <div class="col-lg-8">
+        <section class="col-lg-8">
           <div class="card">
             <div class="card-header">
-              <h5 class="card-title mb-0">Nova Receita</h5>
+              <h2 class="card-title mb-0">Nova Receita</h2>
             </div>
             <div class="card-body">
               <form id="formReceita">
                 <div class="row mb-4">
                   <div class="col-md-6">
                     <label for="nomeReceita" class="form-label"
-                      >Nome da Receita *</label
+                      >Nome da Receita <span class="text-danger">*</span></label
                     >
                     <input
                       type="text"
@@ -35,19 +37,26 @@
                       id="nomeReceita"
                       name="nomeReceita"
                       required
+                      aria-required="true"
+                      aria-describedby="nomeReceitaHelp"
                     />
+                    <div id="nomeReceitaHelp" class="form-text visually-hidden">
+                      O nome pelo qual a receita será identificada.
+                    </div>
                   </div>
                   <div class="col-md-6">
                     <label for="categoriaReceita" class="form-label"
-                      >Categoria *</label
+                      >Categoria <span class="text-danger">*</span></label
                     >
                     <select
                       class="form-select"
                       id="categoriaReceita"
                       name="categoriaReceita"
                       required
+                      aria-required="true"
+                      aria-describedby="categoriaReceitaHelp"
                     >
-                      <option value="">Selecione...</option>
+                      <option value="">Selecione a categoria...</option>
                       <option value="Doces">Doces</option>
                       <option value="Salgados">Salgados</option>
                       <option value="Bebidas">Bebidas</option>
@@ -59,13 +68,20 @@
                       <option value="Lanches">Lanches</option>
                       <option value="Outros">Outros</option>
                     </select>
+                    <div
+                      id="categoriaReceitaHelp"
+                      class="form-text visually-hidden"
+                    >
+                      A categoria culinária da receita.
+                    </div>
                   </div>
                 </div>
 
                 <div class="row mb-4">
                   <div class="col-md-4">
                     <label for="tempoPreparo" class="form-label"
-                      >Tempo de Preparo (min) *</label
+                      >Tempo de Preparo (min)
+                      <span class="text-danger">*</span></label
                     >
                     <input
                       type="number"
@@ -74,11 +90,20 @@
                       name="tempoPreparo"
                       min="1"
                       required
+                      aria-required="true"
+                      aria-describedby="tempoPreparoHelp"
                     />
+                    <div
+                      id="tempoPreparoHelp"
+                      class="form-text visually-hidden"
+                    >
+                      Tempo estimado para o preparo da receita em minutos.
+                    </div>
                   </div>
                   <div class="col-md-4">
                     <label for="rendimento" class="form-label"
-                      >Rendimento (porções) *</label
+                      >Rendimento (porções)
+                      <span class="text-danger">*</span></label
                     >
                     <input
                       type="number"
@@ -87,7 +112,12 @@
                       name="rendimento"
                       min="1"
                       required
+                      aria-required="true"
+                      aria-describedby="rendimentoHelp"
                     />
+                    <div id="rendimentoHelp" class="form-text visually-hidden">
+                      Número de porções ou unidades que a receita rende.
+                    </div>
                   </div>
                   <div class="col-md-4">
                     <label for="dificuldade" class="form-label"
@@ -97,16 +127,20 @@
                       class="form-select"
                       id="dificuldade"
                       name="dificuldade"
+                      aria-describedby="dificuldadeHelp"
                     >
                       <option value="Fácil">Fácil</option>
                       <option value="Médio">Médio</option>
                       <option value="Difícil">Difícil</option>
                     </select>
+                    <div id="dificuldadeHelp" class="form-text visually-hidden">
+                      Nível de dificuldade para o preparo da receita.
+                    </div>
                   </div>
                 </div>
 
-                <div class="mb-4">
-                  <h6 class="mb-3">Ingredientes da Receita</h6>
+                <fieldset class="mb-4">
+                  <legend class="h6 mb-3">Ingredientes da Receita</legend>
                   <div class="card bg-light">
                     <div class="card-body">
                       <div class="row mb-3">
@@ -117,11 +151,18 @@
                           <select
                             class="form-select"
                             id="ingredienteSelecionado"
+                            aria-describedby="ingredienteSelecionadoHelp"
                           >
                             <option value="">
                               Selecione um ingrediente...
                             </option>
                           </select>
+                          <div
+                            id="ingredienteSelecionadoHelp"
+                            class="form-text visually-hidden"
+                          >
+                            Selecione um ingrediente para adicionar à receita.
+                          </div>
                         </div>
                         <div class="col-md-3">
                           <label for="quantidadeIngrediente" class="form-label"
@@ -133,22 +174,45 @@
                             id="quantidadeIngrediente"
                             step="0.01"
                             min="0"
+                            aria-describedby="quantidadeIngredienteHelp"
                           />
+                          <div
+                            id="quantidadeIngredienteHelp"
+                            class="form-text visually-hidden"
+                          >
+                            Quantidade do ingrediente a ser usada na receita.
+                          </div>
                         </div>
                         <div class="col-md-2">
-                          <label class="form-label">Unidade</label>
+                          <label for="unidadeIngrediente" class="form-label"
+                            >Unidade</label
+                          >
                           <input
                             type="text"
                             class="form-control"
                             id="unidadeIngrediente"
+                            readonly
+                            aria-readonly="true"
+                            aria-label="Unidade de medida do ingrediente selecionado"
+                            aria-describedby="unidadeIngredienteHelp"
                           />
+                          <div
+                            id="unidadeIngredienteHelp"
+                            class="form-text visually-hidden"
+                          >
+                            Unidade de medida do ingrediente, preenchida
+                            automaticamente.
+                          </div>
                         </div>
                         <div class="col-md-2">
-                          <label class="form-label">&nbsp;</label>
+                          <label class="form-label visually-hidden"
+                            >Ação de adicionar ingrediente</label
+                          >
                           <button
                             type="button"
                             class="btn btn-success d-block w-100"
                             id="adicionarIngrediente"
+                            aria-label="Adicionar ingrediente à lista"
                           >
                             Adicionar
                           </button>
@@ -158,17 +222,23 @@
                   </div>
 
                   <div class="mt-3">
-                    <h6>Ingredientes Adicionados</h6>
+                    <h3 class="h6">Ingredientes Adicionados</h3>
                     <div class="table-responsive">
-                      <table class="table table-sm table-striped">
+                      <table
+                        class="table table-sm table-striped"
+                        aria-label="Lista de ingredientes adicionados à receita"
+                      >
+                        <caption>
+                          Ingredientes que foram adicionados para esta receita.
+                        </caption>
                         <thead class="table-dark">
                           <tr>
-                            <th>Ingrediente</th>
-                            <th>Quantidade</th>
-                            <th>Unidade</th>
-                            <th>Preço Unit.</th>
-                            <th>Custo Total</th>
-                            <th>Ações</th>
+                            <th scope="col">Ingrediente</th>
+                            <th scope="col">Quantidade</th>
+                            <th scope="col">Unidade</th>
+                            <th scope="col">Preço Unit.</th>
+                            <th scope="col">Custo Total</th>
+                            <th scope="col">Ações</th>
                           </tr>
                         </thead>
                         <tbody id="listaIngredientesReceita">
@@ -181,11 +251,11 @@
                       </table>
                     </div>
                   </div>
-                </div>
+                </fieldset>
 
                 <div class="mb-4">
                   <label for="modoPreparo" class="form-label"
-                    >Modo de Preparo *</label
+                    >Modo de Preparo <span class="text-danger">*</span></label
                   >
                   <textarea
                     class="form-control"
@@ -194,7 +264,13 @@
                     rows="6"
                     required
                     placeholder="Descreva passo a passo como preparar esta receita..."
+                    aria-required="true"
+                    aria-describedby="modoPreparoHelp"
                   ></textarea>
+                  <div id="modoPreparoHelp" class="form-text visually-hidden">
+                    Descreva detalhadamente o passo a passo de como preparar
+                    esta receita.
+                  </div>
                 </div>
 
                 <div class="mb-4">
@@ -207,7 +283,12 @@
                     name="observacoes"
                     rows="3"
                     placeholder="Dicas, variações ou observações importantes..."
+                    aria-describedby="observacoesHelp"
                   ></textarea>
+                  <div id="observacoesHelp" class="form-text visually-hidden">
+                    Adicione dicas, variações ou outras observações importantes
+                    sobre a receita.
+                  </div>
                 </div>
 
                 <div class="d-flex gap-2">
@@ -215,84 +296,130 @@
                     type="button"
                     class="btn btn-secondary"
                     id="limparFormReceita"
+                    aria-label="Limpar todos os campos do formulário"
                   >
                     Limpar
                   </button>
-                  <button type="submit" class="btn btn-primary">
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    aria-label="Cadastrar a nova receita"
+                  >
                     Cadastrar Receita
                   </button>
                 </div>
               </form>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="col-lg-4">
-          <div class="card mb-4">
+        <aside class="col-lg-4">
+          <section class="card mb-4" aria-labelledby="resumo-custos-heading">
             <div class="card-header">
-              <h6 class="card-title mb-0">Resumo de Custos</h6>
+              <h2 class="card-title mb-0" id="resumo-custos-heading">
+                Resumo de Custos
+              </h2>
             </div>
             <div class="card-body">
               <div class="row text-center">
                 <div class="col-6">
-                  <h5 class="text-primary mb-1" id="custoTotal">R$ 0,00</h5>
+                  <p
+                    class="h5 text-primary mb-1"
+                    id="custoTotal"
+                    aria-live="polite"
+                  >
+                    R$ 0,00
+                  </p>
                   <small class="text-muted">Custo Total</small>
                 </div>
                 <div class="col-6">
-                  <h5 class="text-success mb-1" id="custoPorcao">R$ 0,00</h5>
+                  <p
+                    class="h5 text-success mb-1"
+                    id="custoPorcao"
+                    aria-live="polite"
+                  >
+                    R$ 0,00
+                  </p>
                   <small class="text-muted">Por Porção</small>
                 </div>
               </div>
               <hr />
               <div class="row text-center">
                 <div class="col-6">
-                  <h6 class="text-info mb-1" id="totalIngredientes">0</h6>
+                  <p
+                    class="h6 text-info mb-1"
+                    id="totalIngredientes"
+                    aria-live="polite"
+                  >
+                    0
+                  </p>
                   <small class="text-muted">Ingredientes</small>
                 </div>
                 <div class="col-6">
-                  <h6 class="text-warning mb-1" id="tempoPreparoDisplay">
+                  <p
+                    class="h6 text-warning mb-1"
+                    id="tempoPreparoDisplay"
+                    aria-live="polite"
+                  >
                     0 min
-                  </h6>
+                  </p>
                   <small class="text-muted">Tempo</small>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div class="card">
+          <section class="card" aria-labelledby="dicas-cadastro-heading">
             <div class="card-header">
-              <h6 class="card-title mb-0">Dicas</h6>
+              <h2 class="card-title mb-0" id="dicas-cadastro-heading">Dicas</h2>
             </div>
             <div class="card-body">
               <ul class="list-unstyled mb-0">
-                <li class="mb-2">💡 Adicione ingredientes na ordem de uso</li>
-                <li class="mb-2">📝 Seja detalhado no modo de preparo</li>
-                <li class="mb-2">⏱️ Considere tempo de preparo e cocção</li>
-                <li class="mb-2">
+                <li class="mb-2" role="listitem">
+                  💡 Adicione ingredientes na ordem de uso
+                </li>
+                <li class="mb-2" role="listitem">
+                  📝 Seja detalhado no modo de preparo
+                </li>
+                <li class="mb-2" role="listitem">
+                  ⏱️ Considere tempo de preparo e cocção
+                </li>
+                <li class="mb-2" role="listitem">
                   💰 Os custos são calculados automaticamente
                 </li>
-                <li class="mb-2">🔄 Você pode editar a receita depois</li>
+                <li class="mb-2" role="listitem">
+                  🔄 Você pode editar a receita depois
+                </li>
               </ul>
             </div>
-          </div>
-        </div>
+          </section>
+        </aside>
       </div>
-    </div>
+    </main>
 
-    <div class="modal fade" id="modalConfirmacao" tabindex="-1">
+    <div
+      class="modal fade"
+      id="modalConfirmacao"
+      tabindex="-1"
+      aria-labelledby="modalConfirmacaoLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Receita Cadastrada!</h5>
+            <h2 class="modal-title fs-5" id="modalConfirmacaoLabel">
+              Receita Cadastrada!
+            </h2>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
+              aria-label="Fechar"
             ></button>
           </div>
           <div class="modal-body">
             <p>Sua receita foi cadastrada com sucesso!</p>
-            <div id="resumoReceita"></div>
+            <div id="resumoReceita" role="region" aria-live="polite"></div>
           </div>
           <div class="modal-footer">
             <button
@@ -306,6 +433,7 @@
               type="button"
               class="btn btn-primary"
               onclick="window.location.href='consulta_receitas.html'"
+              aria-label="Ver todas as receitas cadastradas"
             >
               Ver Receitas
             </button>
@@ -313,7 +441,7 @@
         </div>
       </div>
     </div>
-    <!-- Firebase -->
+
     <script defer src="/__/firebase/11.9.0/firebase-app-compat.js"></script>
     <script defer src="/__/firebase/11.9.0/firebase-auth-compat.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>

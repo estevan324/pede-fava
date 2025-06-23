@@ -3,14 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Pede Fava - ERP para Confeitarias</title>
   </head>
   <body>
-    <footer class="bg-dark text-light text-center text-lg-start mt-auto py-4">
+    <footer
+      class="bg-dark text-light text-center text-lg-start mt-auto py-4"
+      aria-labelledby="footer-heading"
+    >
+      <h2 id="footer-heading" class="visually-hidden">Rodapé do Site</h2>
+
       <div class="container p-4">
         <div class="row">
-          <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-            <h5 class="text-uppercase mb-3">Pede Fava</h5>
+          <section
+            class="col-lg-6 col-md-12 mb-4 mb-md-0"
+            aria-labelledby="sobre-pedefava-heading"
+          >
+            <h3 class="text-uppercase mb-3" id="sobre-pedefava-heading">
+              Pede Fava
+            </h3>
             <p>
               O <strong>Pede Fava</strong> é o ERP completo e intuitivo, feito
               sob medida para confeiteiras e negócios de confeitaria em
@@ -20,40 +30,70 @@
               aumenta a produtividade para focar no que realmente importa: criar
               delícias!
             </p>
-          </div>
+          </section>
 
-          <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-            <h5 class="text-uppercase mb-3">Links Rápidos</h5>
+          <nav
+            class="col-lg-3 col-md-6 mb-4 mb-md-0"
+            aria-labelledby="links-rapidos-heading"
+          >
+            <h3 class="text-uppercase mb-3" id="links-rapidos-heading">
+              Links Rápidos
+            </h3>
             <ul class="list-unstyled mb-0">
               <li>
                 <a
                   href="../pages/sobre-nos.html"
                   class="text-light text-decoration-none"
+                  aria-label="Saiba mais sobre nós"
                   >Sobre Nós</a
                 >
               </li>
             </ul>
-          </div>
+          </nav>
 
-          <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-            <h5 class="text-uppercase mb-3">Fale Conosco</h5>
+          <section
+            class="col-lg-3 col-md-6 mb-4 mb-md-0"
+            aria-labelledby="fale-conosco-heading"
+          >
+            <h3 class="text-uppercase mb-3" id="fale-conosco-heading">
+              Fale Conosco
+            </h3>
             <ul class="list-unstyled mb-0">
               <li>
-                <p>📍 Campinas, SP, Brasil</p>
+                <p>
+                  <span class="fas fa-map-marker-alt" aria-hidden="true"></span>
+                  <span aria-label="Localização">📍 Campinas, SP, Brasil</span>
+                </p>
               </li>
               <li>
-                <p>✉️ contato@pedefava.com.br</p>
+                <p>
+                  <span class="fas fa-envelope" aria-hidden="true"></span>
+                  <a
+                    href="mailto:contato@pedefava.com.br"
+                    class="text-light text-decoration-none"
+                    aria-label="Enviar um e-mail para contato@pedefava.com.br"
+                    >✉️ contato@pedefava.com.br</a
+                  >
+                </p>
               </li>
               <li>
-                <p>📞 +55 19 9xxxx-xxxx</p>
+                <p>
+                  <span class="fas fa-phone" aria-hidden="true"></span>
+                  <a
+                    href="tel:+55199xxxxxxxx"
+                    class="text-light text-decoration-none"
+                    aria-label="Ligar para +55 19 9xxxx-xxxx"
+                    >📞 +55 19 9xxxx-xxxx</a
+                  >
+                </p>
               </li>
             </ul>
-          </div>
+          </section>
         </div>
       </div>
 
       <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
-        © 2025 Pede Fava. Todos os direitos reservados.
+        <p class="mb-0">© 2025 Pede Fava. Todos os direitos reservados.</p>
       </div>
     </footer>
   </body>

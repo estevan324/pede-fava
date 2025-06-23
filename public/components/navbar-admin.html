@@ -3,13 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Navegação do Painel Administrativo</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav
+      class="navbar navbar-expand-lg navbar-dark bg-dark"
+      aria-label="Navegação Principal do Painel Administrativo"
+    >
       <div class="container-fluid">
-        <a class="navbar-brand">
-          🔓 Painel Admin
+        <a class="navbar-brand" href="../admin/dashboard.html">
+          <span aria-hidden="true">🔓</span>
+          <span class="visually-hidden">Painel Administrativo:</span>
+          Painel Admin
         </a>
         <button
           class="navbar-toggler"
@@ -18,35 +23,68 @@
           data-bs-target="#adminNavbar"
           aria-controls="adminNavbar"
           aria-expanded="false"
-          aria-label="Toggle navigation"
+          aria-label="Alternar navegação"
         >
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="adminNavbar">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="../admin/ingredientes.html">
+              <a
+                class="nav-link"
+                href="../admin/ingredientes.html"
+                aria-label="Ir para a página de Ingredientes"
+              >
                 Ingredientes
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../admin/estoque.html">Estoque</a>
+              <a
+                class="nav-link"
+                href="../admin/estoque.html"
+                aria-label="Ir para a página de Estoque"
+              >
+                Estoque
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../admin/receitas.html">Receitas</a>
+              <a
+                class="nav-link"
+                href="../admin/receitas.html"
+                aria-label="Ir para a página de Receitas"
+              >
+                Receitas
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../admin/clientes.html">Clientes</a>
+              <a
+                class="nav-link"
+                href="../admin/clientes.html"
+                aria-label="Ir para a página de Clientes"
+              >
+                Clientes
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../admin/pedidos.html">Pedidos</a>
+              <a
+                class="nav-link"
+                href="../admin/pedidos.html"
+                aria-label="Ir para a página de Pedidos"
+              >
+                Pedidos
+              </a>
             </li>
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <button class="btn nav-link" onclick="logOut()"">
+              <button
+                class="btn nav-link"
+                type="button"
+                onclick="logOut()"
+                aria-label="Sair do painel administrativo"
+              >
                 Sair
-              </a>
+              </button>
             </li>
           </ul>
         </div>

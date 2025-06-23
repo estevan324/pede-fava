@@ -3,11 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clientes</title>
+    <title>Clientes - Dashboard Administrativo</title>
 
     <link rel="stylesheet" href="../styles/global.css" />
 
-    <!-- bootstrap -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -16,10 +15,12 @@
     />
   </head>
   <body>
-    <nav id="navbar-admin"></nav>
+    <header>
+      <nav id="navbar-admin" aria-label="Navegação Principal do Painel"></nav>
+    </header>
 
     <main class="container mt-4">
-      <header>
+      <section>
         <div class="row">
           <div class="col my-auto mb-2">
             <h4 class="m-0">Clientes</h4>
@@ -32,38 +33,49 @@
                 data-bs-toggle="modal"
                 data-bs-target="#cadastrarClientes"
                 id="openModalCadastro"
+                aria-haspopup="dialog"
+                aria-controls="cadastrarClientes"
               >
-                Adicionar
+                Adicionar Cliente
               </button>
             </div>
           </div>
         </div>
-      </header>
+      </section>
       <hr />
 
-      <div class="card mb-4">
+      <section class="card mb-4">
         <div
           class="card-header d-flex justify-content-between align-items-center"
         >
           <h5 class="card-title mb-0">Lista de Clientes</h5>
-          <span class="badge bg-primary" id="totalClientes"></span>
+          <span
+            class="badge bg-primary"
+            id="totalClientes"
+            aria-live="polite"
+          ></span>
         </div>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-striped table-hover">
+              <caption>
+                Lista detalhada de todos os clientes cadastrados.
+              </caption>
               <thead class="table-dark">
                 <tr>
-                  <th>Nome</th>
-                  <th>E-mail</th>
-                  <th>Telefone</th>
-                  <th>Ações</th>
+                  <th scope="col">Nome</th>
+                  <th scope="col">E-mail</th>
+                  <th scope="col">Telefone</th>
+                  <th scope="col">Ações</th>
                 </tr>
               </thead>
               <tbody id="tabelaClientes">
                 <tr>
                   <td colspan="4" class="text-center text-muted py-5">
                     <div class="spinner-border text-dark" role="status">
-                      <span class="visually-hidden">Loading...</span>
+                      <span class="visually-hidden"
+                        >Carregando clientes...</span
+                      >
                     </div>
                   </td>
                 </tr>
@@ -71,42 +83,72 @@
             </table>
           </div>
         </div>
-      </div>
+      </section>
     </main>
 
     <div
       class="modal fade"
       id="cadastrarClientes"
       tabindex="-1"
-      aria-labelledby="exampleModalLabel"
+      aria-labelledby="tituloFormulario"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="tituloFormulario">
+            <h2 class="modal-title fs-5" id="tituloFormulario">
               Cadastro de cliente
-            </h1>
+            </h2>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
-              aria-label="Close"
+              aria-label="Fechar"
             ></button>
           </div>
           <div class="modal-body">
             <form id="formCliente">
               <div class="mb-3">
                 <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" required />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nome"
+                  required
+                  aria-required="true"
+                  aria-describedby="nomeHelp"
+                />
+                <div id="nomeHelp" class="form-text visually-hidden">
+                  Digite o nome completo do cliente.
+                </div>
               </div>
               <div class="mb-3">
-                <label for="nome" class="form-label">E-mail</label>
-                <input type="email" class="form-control" id="email" required />
+                <label for="email" class="form-label">E-mail</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  required
+                  aria-required="true"
+                  aria-describedby="emailHelp"
+                />
+                <div id="emailHelp" class="form-text visually-hidden">
+                  Digite o endereço de e-mail do cliente.
+                </div>
               </div>
               <div class="mb-3">
-                <label for="nome" class="form-label">Telefone</label>
-                <input type="tel" class="form-control" id="telefone" required />
+                <label for="telefone" class="form-label">Telefone</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="telefone"
+                  required
+                  aria-required="true"
+                  aria-describedby="telefoneHelp"
+                />
+                <div id="telefoneHelp" class="form-text visually-hidden">
+                  Digite o número de telefone do cliente, incluindo o DDD.
+                </div>
               </div>
             </form>
           </div>
@@ -119,7 +161,7 @@
               Fechar
             </button>
             <button type="button" class="btn btn-primary" id="btnSalvarCliente">
-              Salvar
+              Salvar Cliente
             </button>
           </div>
         </div>

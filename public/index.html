@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pede Fava</title>
+    <title>Pede Fava - Sistema ERP para Confeitarias</title>
 
-    <!-- Meus imports-->
     <link rel="stylesheet" href="styles/global.css" />
     <link rel="stylesheet" href="styles/home.css" />
 
-    <!-- Bootstrap-->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -18,110 +16,145 @@
     />
   </head>
   <body>
-    <nav id="navbar"></nav>
+    <header aria-label="Cabeçalho Principal do Site">
+      <nav id="navbar" aria-label="Navegação do Site"></nav>
+    </header>
+
     <main class="container">
-      <header class="wallpaper rounded mt-4">
+      <section class="wallpaper rounded mt-4" aria-labelledby="hero-heading">
         <div class="overlay rounded"></div>
         <div class="inner-content">
-          <h1 class="display-4 mb-4">Pede Fava ERP</h1>
+          <h1 class="display-4 mb-4" id="hero-heading">Pede Fava ERP</h1>
           <p class="lead">
             Sistema completo para gerenciamento de receitas e controle de
             estoque de ingredientes.
           </p>
         </div>
-      </header>
+      </section>
 
-      <div class="row mt-4">
+      <section class="row mt-4" aria-labelledby="resumo-sistema-heading">
         <div class="col-12">
           <div class="card">
             <div class="card-body text-center">
-              <h6 class="card-title">Resumo do Sistema</h6>
+              <h2 class="card-title mb-3" id="resumo-sistema-heading">
+                Resumo do Sistema
+              </h2>
               <div class="row">
                 <div class="col-md-3">
                   <div class="border-end">
-                    <h4
-                      class="text-success sensitive-value"
+                    <p
+                      class="h4 text-success sensitive-value"
                       id="quantidadeReceitas"
+                      aria-live="polite"
                     >
                       -
-                    </h4>
+                    </p>
                     <small class="text-muted">Receitas Criadas</small>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="border-end">
-                    <h4 class="text-primary sensitive-value">-</h4>
-                    <small class="text-muted">Pedidos em andamento</small>
+                    <p
+                      class="h4 text-primary sensitive-value"
+                      id="pedidosAndamento"
+                      aria-live="polite"
+                    >
+                      -
+                    </p>
+                    <small class="text-muted">Pedidos em Andamento</small>
                   </div>
                 </div>
 
                 <div class="col-md-3">
                   <div class="border-end">
-                    <h4 class="text-warning sensitive-value" id="estoqueBaixo">
+                    <p
+                      class="h4 text-warning sensitive-value"
+                      id="estoqueBaixo"
+                      aria-live="polite"
+                    >
                       -
-                    </h4>
+                    </p>
                     <small class="text-muted">Itens com Estoque Baixo</small>
                   </div>
                 </div>
                 <div class="col-md-3">
-                  <h4 class="text-info sensitive-value">-</h4>
-                  <small class="text-muted">Valor faturado</small>
+                  <p
+                    class="h4 text-info sensitive-value"
+                    id="valorFaturado"
+                    aria-live="polite"
+                  >
+                    -
+                  </p>
+                  <small class="text-muted">Valor Faturado</small>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="row mt-4">
-        <div class="col-md-4 mb-4" onclick="navigate('admin/receitas.html')">
-          <div class="card nav-card text-center h-100">
+      <section class="row mt-4" aria-labelledby="modulos-heading">
+        <h2 id="modulos-heading" class="visually-hidden">Módulos do Sistema</h2>
+
+        <div class="col-md-4 mb-4">
+          <a
+            href="admin/receitas.html"
+            class="card nav-card text-center h-100 d-block text-decoration-none text-dark"
+            aria-label="Gerenciar Receitas: Cadastre e organize suas receitas."
+          >
             <div class="card-body">
-              <div class="nav-icon">🎂</div>
-              <h5 class="card-title">Gerenciar Receitas</h5>
+              <div class="nav-icon" aria-hidden="true">🎂</div>
+              <h3 class="card-title">Gerenciar Receitas</h3>
               <p class="card-text">
                 Cadastre e organize suas receitas com ingredientes, custos e
                 modo de preparo detalhado.
               </p>
             </div>
-          </div>
+          </a>
         </div>
 
-        <div class="col-md-4 mb-4" onclick="navigate('admin/pedidos.html')">
-          <div class="card nav-card text-center h-100">
+        <div class="col-md-4 mb-4">
+          <a
+            href="admin/pedidos.html"
+            class="card nav-card text-center h-100 d-block text-decoration-none text-dark"
+            aria-label="Controlar Pedidos: Gerencie o fluxo de pedidos."
+          >
             <div class="card-body">
-              <div class="nav-icon">📋</div>
-              <h5 class="card-title">Controlar Pedidos</h5>
+              <div class="nav-icon" aria-hidden="true">📋</div>
+              <h3 class="card-title">Controlar Pedidos</h3>
               <p class="card-text">
                 Gerencie o fluxo de pedidos, desde a entrada até a entrega, com
                 status e detalhes completos.
               </p>
             </div>
-          </div>
+          </a>
         </div>
 
-        <div class="col-md-4 mb-4" onclick="navigate('admin/estoque.html')">
-          <div class="card nav-card text-center h-100">
+        <div class="col-md-4 mb-4">
+          <a
+            href="admin/estoque.html"
+            class="card nav-card text-center h-100 d-block text-decoration-none text-dark"
+            aria-label="Gerenciar Estoque: Controle quantidades e receba alertas."
+          >
             <div class="card-body">
-              <div class="nav-icon">📦</div>
-              <h5 class="card-title">Gerenciar Estoque</h5>
+              <div class="nav-icon" aria-hidden="true">📦</div>
+              <h3 class="card-title">Gerenciar Estoque</h3>
               <p class="card-text">
                 Controle as quantidades em estoque, movimentações e receba
                 alertas de estoque baixo.
               </p>
             </div>
-          </div>
+          </a>
         </div>
-      </div>
+      </section>
     </main>
 
-    <footer id="footer"></footer>
-    <!-- Meus imports-->
+    <footer id="footer" aria-label="Rodapé do Site"></footer>
+
     <script src="scripts/app.js" type="module"></script>
     <script src="scripts/admin/index.js" type="module"></script>
     <script src="scripts/components.js"></script>
 
-    <!-- Firebase -->
     <script defer src="/__/firebase/11.9.0/firebase-app-compat.js"></script>
     <script defer src="/__/firebase/11.9.0/firebase-auth-compat.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
@@ -130,7 +163,6 @@
       src="https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore-compat.js"
     ></script>
 
-    <!-- Bootstrap-->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"

@@ -3,11 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Receitas</title>
+    <title>Receitas - Dashboard Administrativo</title>
 
     <link rel="stylesheet" href="../styles/global.css" />
 
-    <!-- bootstrap -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -16,31 +15,68 @@
     />
   </head>
   <body>
-    <nav id="navbar-admin"></nav>
+    <header>
+      <nav id="navbar-admin" aria-label="Navegação Principal do Painel"></nav>
+    </header>
 
-    <div class="container mt-4">
-      <h1>Consulta de Receitas</h1>
+    <main class="container mt-4">
+      <section>
+        <div class="row">
+          <div class="col my-auto mb-2">
+            <h4 class="m-0">Consulta de Receitas</h4>
+          </div>
+          <div class="col-md-3 mb-2">
+            <div class="d-grid gap-2">
+              <a
+                href="cadastro-receitas.html"
+                class="btn btn-primary"
+                aria-label="Ir para a página de cadastro de nova receita"
+                >Adicionar Receita</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+      <hr />
 
-      <div class="row mb-3">
+      <section
+        class="row mb-3"
+        aria-label="Opções de busca e filtragem de receitas"
+      >
         <div class="col-md-6">
           <div class="input-group">
+            <label for="buscarReceita" class="visually-hidden"
+              >Buscar por nome da receita</label
+            >
             <input
               type="text"
               class="form-control"
               id="buscarReceita"
               placeholder="Buscar por nome da receita..."
+              aria-describedby="btnBuscarReceitaHelp"
             />
             <button
               class="btn btn-outline-secondary"
               type="button"
               id="btnBuscarReceita"
+              aria-label="Executar busca por nome da receita"
             >
               Buscar
             </button>
+            <div id="btnBuscarReceitaHelp" class="visually-hidden">
+              Pressione para buscar receitas pelo nome digitado.
+            </div>
           </div>
         </div>
         <div class="col-md-3">
-          <select class="form-select" id="filtroCategoria">
+          <label for="filtroCategoria" class="visually-hidden"
+            >Filtrar por categoria</label
+          >
+          <select
+            class="form-select"
+            id="filtroCategoria"
+            aria-label="Filtrar receitas por categoria"
+          >
             <option value="">Todas as categorias</option>
             <option value="entrada">Entrada</option>
             <option value="prato_principal">Prato Principal</option>
@@ -51,34 +87,51 @@
           </select>
         </div>
         <div class="col-md-3">
-          <select class="form-select" id="ordenarPor">
+          <label for="ordenarPor" class="visually-hidden"
+            >Ordenar lista de receitas por</label
+          >
+          <select
+            class="form-select"
+            id="ordenarPor"
+            aria-label="Ordenar receitas por"
+          >
             <option value="nome">Ordenar por Nome</option>
             <option value="categoria">Ordenar por Categoria</option>
             <option value="tempo">Ordenar por Tempo</option>
             <option value="custo">Ordenar por Custo</option>
           </select>
         </div>
-      </div>
+      </section>
 
-      <div class="card">
+      <section class="card" aria-labelledby="lista-receitas-heading">
         <div
           class="card-header d-flex justify-content-between align-items-center"
         >
-          <h5 class="card-title mb-0">Lista de Receitas</h5>
-          <span class="badge bg-primary" id="totalReceitas">0 receitas</span>
+          <h5 class="card-title mb-0" id="lista-receitas-heading">
+            Lista de Receitas
+          </h5>
+          <span
+            class="badge bg-primary"
+            id="totalReceitas"
+            aria-live="polite"
+          ></span>
         </div>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-striped table-hover">
+              <caption>
+                Tabela com a lista de receitas cadastradas, incluindo categoria,
+                tempo de preparo, rendimento e custos.
+              </caption>
               <thead class="table-dark">
                 <tr>
-                  <th>Nome</th>
-                  <th>Categoria</th>
-                  <th>Tempo (min)</th>
-                  <th>Rendimento</th>
-                  <th>Custo Total</th>
-                  <th>Custo/Porção</th>
-                  <th>Ações</th>
+                  <th scope="col">Nome</th>
+                  <th scope="col">Categoria</th>
+                  <th scope="col">Tempo (min)</th>
+                  <th scope="col">Rendimento</th>
+                  <th scope="col">Custo Total</th>
+                  <th scope="col">Custo/Porção</th>
+                  <th scope="col">Ações</th>
                 </tr>
               </thead>
               <tbody id="tabelaReceitas">
@@ -89,6 +142,7 @@
                     <a
                       href="cadastro-receitas.html"
                       class="btn btn-primary btn-sm mt-2"
+                      aria-label="Cadastrar sua primeira receita"
                     >
                       Cadastrar Primeira Receita
                     </a>
@@ -98,116 +152,189 @@
             </table>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="row mt-4">
+      <section class="row mt-4" aria-labelledby="estatisticas-receitas-heading">
+        <h2 id="estatisticas-receitas-heading" class="visually-hidden">
+          Estatísticas de Receitas
+        </h2>
         <div class="col-md-3">
           <div class="card border-primary">
             <div class="card-body text-center">
-              <h5 class="card-title text-primary">Total de Receitas</h5>
-              <h2 class="text-primary" id="estatisticaTotal">0</h2>
-              <p class="card-text">Receitas cadastradas</p>
+              <h3 class="card-title text-primary">Total de Receitas</h3>
+              <p
+                class="h2 text-primary"
+                id="estatisticaTotal"
+                aria-live="polite"
+              >
+                0
+              </p>
+              <p class="card-text">Total de receitas cadastradas</p>
             </div>
           </div>
         </div>
         <div class="col-md-3">
           <div class="card border-success">
             <div class="card-body text-center">
-              <h5 class="card-title text-success">Receita Mais Barata</h5>
-              <h2 class="text-success" id="receitaMaisBarata">R$ 0,00</h2>
-              <p class="card-text">Menor custo por porção</p>
+              <h3 class="card-title text-success">Receita Mais Barata</h3>
+              <p
+                class="h2 text-success"
+                id="receitaMaisBarata"
+                aria-live="polite"
+              >
+                R$ 0,00
+              </p>
+              <p class="card-text">
+                Custo por porção da receita mais econômica
+              </p>
             </div>
           </div>
         </div>
         <div class="col-md-3">
           <div class="card border-warning">
             <div class="card-body text-center">
-              <h5 class="card-title text-warning">Receita Mais Cara</h5>
-              <h2 class="text-warning" id="receitaMaisCara">R$ 0,00</h2>
-              <p class="card-text">Maior custo por porção</p>
+              <h3 class="card-title text-warning">Receita Mais Cara</h3>
+              <p
+                class="h2 text-warning"
+                id="receitaMaisCara"
+                aria-live="polite"
+              >
+                R$ 0,00
+              </p>
+              <p class="card-text">Custo por porção da receita mais cara</p>
             </div>
           </div>
         </div>
         <div class="col-md-3">
           <div class="card border-info">
             <div class="card-body text-center">
-              <h5 class="card-title text-info">Tempo Médio</h5>
-              <h2 class="text-info" id="tempoMedio">0 min</h2>
-              <p class="card-text">Tempo médio de preparo</p>
+              <h3 class="card-title text-info">Tempo Médio</h3>
+              <p class="h2 text-info" id="tempoMedio" aria-live="polite">
+                0 min
+              </p>
+              <p class="card-text">
+                Tempo médio de preparo de todas as receitas
+              </p>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
 
-    <!-- Modal para visualizar receita -->
-    <div class="modal fade" id="modalVisualizarReceita" tabindex="-1">
+    <div
+      class="modal fade"
+      id="modalVisualizarReceita"
+      tabindex="-1"
+      aria-labelledby="tituloModalVisualizarReceita"
+      aria-hidden="true"
+    >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="tituloReceita">Visualizar Receita</h5>
+            <h2 class="modal-title fs-5" id="tituloModalVisualizarReceita">
+              Visualizar Receita: <span id="tituloReceita"></span>
+            </h2>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
+              aria-label="Fechar visualização da receita"
             ></button>
           </div>
           <div class="modal-body">
             <div class="row">
               <div class="col-md-6">
-                <h6>Informações Gerais</h6>
+                <h3>Informações Gerais</h3>
                 <p>
-                  <strong>Descrição:</strong> <span id="descricaoModal"></span>
+                  <strong>Descrição:</strong>
+                  <span
+                    id="descricaoModal"
+                    aria-label="Descrição da receita"
+                  ></span>
                 </p>
                 <p>
-                  <strong>Categoria:</strong> <span id="categoriaModal"></span>
+                  <strong>Categoria:</strong>
+                  <span
+                    id="categoriaModal"
+                    aria-label="Categoria da receita"
+                  ></span>
                 </p>
                 <p>
                   <strong>Tempo de Preparo:</strong>
-                  <span id="tempoModal"></span> minutos
+                  <span
+                    id="tempoModal"
+                    aria-label="Tempo de preparo em minutos"
+                  ></span>
+                  minutos
                 </p>
                 <p>
                   <strong>Rendimento:</strong>
-                  <span id="rendimentoModal"></span> porções
+                  <span
+                    id="rendimentoModal"
+                    aria-label="Rendimento em porções"
+                  ></span>
+                  porções
                 </p>
               </div>
               <div class="col-md-6">
-                <h6>Custos</h6>
+                <h3>Custos</h3>
                 <p>
                   <strong>Custo Total:</strong>
-                  <span id="custoTotalModal"></span>
+                  <span
+                    id="custoTotalModal"
+                    aria-label="Custo total da receita"
+                  ></span>
                 </p>
                 <p>
                   <strong>Custo por Porção:</strong>
-                  <span id="custoPorcaoModal"></span>
+                  <span
+                    id="custoPorcaoModal"
+                    aria-label="Custo por porção da receita"
+                  ></span>
                 </p>
               </div>
             </div>
 
             <hr />
 
-            <h6>Ingredientes</h6>
+            <h3>Ingredientes</h3>
             <div class="table-responsive">
-              <table class="table table-sm">
+              <table
+                class="table table-sm"
+                aria-label="Tabela de ingredientes da receita"
+              >
+                <caption>
+                  Lista detalhada de ingredientes com suas quantidades, unidades
+                  e custos individuais.
+                </caption>
                 <thead class="table-light">
                   <tr>
-                    <th>Ingrediente</th>
-                    <th>Quantidade</th>
-                    <th>Unidade</th>
-                    <th>Custo</th>
+                    <th scope="col">Ingrediente</th>
+                    <th scope="col">Quantidade</th>
+                    <th scope="col">Unidade</th>
+                    <th scope="col">Custo</th>
                   </tr>
                 </thead>
-                <tbody id="ingredientesModal"></tbody>
+                <tbody id="ingredientesModal">
+                  <tr>
+                    <td colspan="4" class="text-center text-muted">
+                      Nenhum ingrediente listado.
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
 
             <hr />
 
-            <h6>Modo de Preparo</h6>
+            <h3>Modo de Preparo</h3>
             <div
               id="modoPreparoModal"
               class="border p-3 bg-light rounded"
-            ></div>
+              aria-label="Instruções detalhadas do modo de preparo da receita"
+            >
+              <p class="text-muted">Nenhum modo de preparo disponível.</p>
+            </div>
           </div>
           <div class="modal-footer">
             <button
@@ -221,6 +348,7 @@
               type="button"
               class="btn btn-primary"
               onclick="editarReceita()"
+              aria-label="Abrir formulário para editar esta receita"
             >
               Editar Receita
             </button>
@@ -229,16 +357,24 @@
       </div>
     </div>
 
-    <!-- Modal para editar receita -->
-    <div class="modal fade" id="modalEditarReceita" tabindex="-1">
+    <div
+      class="modal fade"
+      id="modalEditarReceita"
+      tabindex="-1"
+      aria-labelledby="tituloModalEditarReceita"
+      aria-hidden="true"
+    >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Editar Receita</h5>
+            <h2 class="modal-title fs-5" id="tituloModalEditarReceita">
+              Editar Receita
+            </h2>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
+              aria-label="Fechar formulário de edição de receita"
             ></button>
           </div>
           <div class="modal-body">
@@ -253,7 +389,15 @@
                   class="form-control"
                   id="editarNomeReceita"
                   required
+                  aria-required="true"
+                  aria-describedby="editarNomeReceitaHelp"
                 />
+                <div
+                  id="editarNomeReceitaHelp"
+                  class="form-text visually-hidden"
+                >
+                  Nome pelo qual a receita será identificada.
+                </div>
               </div>
               <div class="mb-3">
                 <label for="editarDescricaoReceita" class="form-label"
@@ -263,7 +407,14 @@
                   class="form-control"
                   id="editarDescricaoReceita"
                   rows="3"
+                  aria-describedby="editarDescricaoReceitaHelp"
                 ></textarea>
+                <div
+                  id="editarDescricaoReceitaHelp"
+                  class="form-text visually-hidden"
+                >
+                  Breve descrição ou introdução da receita.
+                </div>
               </div>
               <div class="row">
                 <div class="col-md-4">
@@ -277,7 +428,15 @@
                       id="editarTempoReceita"
                       min="1"
                       required
+                      aria-required="true"
+                      aria-describedby="editarTempoReceitaHelp"
                     />
+                    <div
+                      id="editarTempoReceitaHelp"
+                      class="form-text visually-hidden"
+                    >
+                      Tempo estimado para o preparo da receita em minutos.
+                    </div>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -291,7 +450,15 @@
                       id="editarRendimentoReceita"
                       min="1"
                       required
+                      aria-required="true"
+                      aria-describedby="editarRendimentoReceitaHelp"
                     />
+                    <div
+                      id="editarRendimentoReceitaHelp"
+                      class="form-text visually-hidden"
+                    >
+                      Número de porções ou unidades que a receita rende.
+                    </div>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -303,6 +470,8 @@
                       class="form-select"
                       id="editarCategoriaReceita"
                       required
+                      aria-required="true"
+                      aria-describedby="editarCategoriaReceitaHelp"
                     >
                       <option value="entrada">Entrada</option>
                       <option value="prato_principal">Prato Principal</option>
@@ -311,6 +480,12 @@
                       <option value="lanche">Lanche</option>
                       <option value="acompanhamento">Acompanhamento</option>
                     </select>
+                    <div
+                      id="editarCategoriaReceitaHelp"
+                      class="form-text visually-hidden"
+                    >
+                      Categoria culinária da receita.
+                    </div>
                   </div>
                 </div>
               </div>
@@ -323,7 +498,15 @@
                   id="editarModoPreparoReceita"
                   rows="6"
                   required
+                  aria-required="true"
+                  aria-describedby="editarModoPreparoReceitaHelp"
                 ></textarea>
+                <div
+                  id="editarModoPreparoReceitaHelp"
+                  class="form-text visually-hidden"
+                >
+                  Instruções detalhadas sobre como preparar a receita.
+                </div>
               </div>
             </form>
           </div>
@@ -339,6 +522,7 @@
               type="button"
               class="btn btn-primary"
               onclick="salvarEdicaoReceita()"
+              aria-label="Salvar as alterações na receita"
             >
               Salvar Alterações
             </button>
@@ -351,7 +535,6 @@
     <script src="../scripts/app.js" type="module"></script>
     <script src="../scripts/admin/receitas.js" type="module"></script>
 
-    <!-- Firebase -->
     <script defer src="/__/firebase/11.9.0/firebase-app-compat.js"></script>
     <script defer src="/__/firebase/11.9.0/firebase-auth-compat.js"></script>
     <script
@@ -359,7 +542,6 @@
       src="https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore-compat.js"
     ></script>
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-    <!-- Bootstrap-->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"

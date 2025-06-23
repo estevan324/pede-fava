@@ -1,4 +1,4 @@
-header.wallpaper {
+.wallpaper {
   position: relative;
   background-image: url("../images/wallpaper.jpg");
   background-repeat: no-repeat;
@@ -8,7 +8,7 @@ header.wallpaper {
   padding: 5rem 2rem;
 }
 
-header.wallpaper .overlay {
+.wallpaper .overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -19,7 +19,7 @@ header.wallpaper .overlay {
   z-index: 0;
 }
 
-header.wallpaper .inner-content {
+.wallpaper .inner-content {
   position: relative;
   z-index: 1;
 }

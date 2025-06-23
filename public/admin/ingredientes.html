@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ingredientes</title>
+    <title>Ingredientes - Dashboard Administrativo</title>
 
     <link rel="stylesheet" href="../styles/global.css" />
 
@@ -15,9 +15,12 @@
     />
   </head>
   <body>
-    <nav id="navbar-admin"></nav>
+    <header>
+      <nav id="navbar-admin" aria-label="Navegação Principal do Painel"></nav>
+    </header>
+
     <main class="container mt-4">
-      <header>
+      <section>
         <div class="row">
           <div class="col my-auto mb-2">
             <h4 class="m-0">Ingredientes</h4>
@@ -30,70 +33,97 @@
                 data-bs-toggle="modal"
                 data-bs-target="#cadastrarIngrediente"
                 id="openModalCadastro"
+                aria-haspopup="dialog"
+                aria-controls="cadastrarIngrediente"
+                aria-label="Adicionar novo ingrediente"
               >
-                Adicionar
+                Adicionar Ingrediente
               </button>
             </div>
           </div>
         </div>
-      </header>
+      </section>
       <hr />
 
-      <div class="row mt-4 d-flex justify-content-center mb-4">
+      <section
+        class="row mt-4 d-flex justify-content-center mb-4"
+        aria-labelledby="status-estoque-heading"
+      >
+        <h2 id="status-estoque-heading" class="visually-hidden">
+          Status de Estoque por Categoria
+        </h2>
         <div class="col-md-3">
           <div class="card border-success">
             <div class="card-body text-center">
               <h5 class="card-title text-success">Estoque Normal</h5>
-              <h2 class="text-success" id="contadorNormal">-</h2>
-              <p class="card-text">Ingredientes adequados</p>
+              <p class="h2 text-success" id="contadorNormal" aria-live="polite">
+                -
+              </p>
+              <p class="card-text">Ingredientes em quantidade adequada</p>
             </div>
           </div>
         </div>
         <div class="col-md-3">
-          <div class="card border-warning">
+          <div class="card border-warning h-100">
             <div class="card-body text-center">
-              <h5 class="card-title text-warning">Estoque Baixo</h5>
-              <h2 class="text-warning" id="contadorBaixo">-</h2>
-              <p class="card-text">Próximos ao mínimo</p>
+              <h3 class="card-title text-warning">Estoque Baixo</h3>
+              <p class="h2 text-warning" id="contadorBaixo" aria-live="polite">
+                -
+              </p>
+              <p class="card-text">Ingredientes próximos ao mínimo</p>
             </div>
           </div>
         </div>
         <div class="col-md-3">
-          <div class="card border-danger">
+          <div class="card border-danger h-100">
             <div class="card-body text-center">
               <h5 class="card-title text-danger">Estoque Zerado</h5>
-              <h2 class="text-danger" id="contadorZerado">-</h2>
-              <p class="card-text">Sem estoque</p>
+              <p class="h2 text-danger" id="contadorZerado" aria-live="polite">
+                -
+              </p>
+              <p class="card-text">Ingredientes sem estoque</p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="card mb-4">
+      <section class="card mb-4" aria-labelledby="lista-ingredientes-heading">
         <div
           class="card-header d-flex justify-content-between align-items-center"
         >
-          <h5 class="card-title mb-0">Lista de Ingredientes</h5>
-          <span class="badge bg-primary" id="totalIngredientes"></span>
+          <h5 class="card-title mb-0" id="lista-ingredientes-heading">
+            Lista de Ingredientes
+          </h5>
+          <span
+            class="badge bg-primary"
+            id="totalIngredientes"
+            aria-live="polite"
+          ></span>
         </div>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-striped table-hover">
+              <caption>
+                Tabela com a lista completa de ingredientes, incluindo status de
+                estoque.
+              </caption>
               <thead class="table-dark">
                 <tr>
-                  <th>Nome</th>
-                  <th>Unidade</th>
-                  <th>Estoque Atual</th>
-                  <th>Estoque Mínimo</th>
-                  <th>Status</th>
-                  <th>Ações</th>
+                  <th scope="col">Nome</th>
+                  <th scope="col">Unidade</th>
+                  <th scope="col">Estoque Atual</th>
+                  <th scope="col">Estoque Mínimo</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Ações</th>
                 </tr>
               </thead>
               <tbody id="tabelaIngredientes">
                 <tr>
-                  <td colspan="7" class="text-center text-muted py-5">
+                  <td colspan="6" class="text-center text-muted py-5">
                     <div class="spinner-border text-dark" role="status">
-                      <span class="visually-hidden">Loading...</span>
+                      <span class="visually-hidden"
+                        >Carregando ingredientes...</span
+                      >
                     </div>
                   </td>
                 </tr>
@@ -101,34 +131,44 @@
             </table>
           </div>
         </div>
-      </div>
+      </section>
     </main>
 
     <div
       class="modal fade"
       id="cadastrarIngrediente"
       tabindex="-1"
-      aria-labelledby="exampleModalLabel"
+      aria-labelledby="tituloFormularioIngrediente"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="tituloFormulario">
+            <h2 class="modal-title fs-5" id="tituloFormularioIngrediente">
               Cadastro de ingrediente
-            </h1>
+            </h2>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
-              aria-label="Close"
+              aria-label="Fechar formulário de cadastro de ingrediente"
             ></button>
           </div>
           <div class="modal-body">
             <form id="formIngrediente">
               <div class="mb-3">
                 <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" required />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nome"
+                  required
+                  aria-required="true"
+                  aria-describedby="nomeHelp"
+                />
+                <div id="nomeHelp" class="form-text visually-hidden">
+                  Nome do ingrediente. Ex: "Açúcar", "Farinha de Trigo".
+                </div>
               </div>
               <div class="mb-3">
                 <label for="unidadeMedida" class="form-label"
@@ -137,8 +177,10 @@
                 <select
                   class="form-select"
                   id="unidadeMedida"
-                  aria-label="Selecione a unidade de medida"
+                  aria-label="Selecione a unidade de medida do ingrediente"
                   required
+                  aria-required="true"
+                  aria-describedby="unidadeMedidaHelp"
                 >
                   <option selected disabled value="">
                     Selecione uma unidade...
@@ -155,6 +197,10 @@
                   <option value="fatia">Fatia(s)</option>
                   <option value="a_gosto">A gosto</option>
                 </select>
+                <div id="unidadeMedidaHelp" class="form-text visually-hidden">
+                  Unidade de medida para o ingrediente (ex: gramas, litros,
+                  unidades).
+                </div>
               </div>
               <div class="mb-3" id="componentEstoqueInicial">
                 <label for="estoqueAtual" class="form-label"
@@ -166,7 +212,13 @@
                   id="estoqueAtual"
                   min="0"
                   required
+                  aria-required="true"
+                  aria-describedby="estoqueAtualHelp"
                 />
+                <div id="estoqueAtualHelp" class="form-text visually-hidden">
+                  Quantidade inicial de estoque para este ingrediente. Deve ser
+                  um número maior ou igual a zero.
+                </div>
               </div>
               <div class="mb-3">
                 <label for="estoqueMinimo" class="form-label"
@@ -178,7 +230,13 @@
                   id="estoqueMinimo"
                   min="0"
                   required
+                  aria-required="true"
+                  aria-describedby="estoqueMinimoHelp"
                 />
+                <div id="estoqueMinimoHelp" class="form-text visually-hidden">
+                  Quantidade mínima de estoque aceitável para este ingrediente.
+                  Abaixo deste valor, o estoque será considerado baixo.
+                </div>
               </div>
             </form>
           </div>
@@ -195,7 +253,7 @@
               class="btn btn-primary"
               id="btnSalvarIngrediente"
             >
-              Salvar
+              Salvar Ingrediente
             </button>
           </div>
         </div>

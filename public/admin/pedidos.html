@@ -3,11 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pedidos</title>
+    <title>Pedidos - Dashboard Administrativo</title>
 
     <link rel="stylesheet" href="../styles/global.css" />
 
-    <!-- bootstrap -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -16,10 +15,12 @@
     />
   </head>
   <body>
-    <nav id="navbar-admin"></nav>
+    <header>
+      <nav id="navbar-admin" aria-label="Navegação Principal do Painel"></nav>
+    </header>
 
     <main class="container mt-4">
-      <header>
+      <section>
         <div class="row">
           <div class="col my-auto mb-2">
             <h4 class="m-0">Pedidos</h4>
@@ -32,68 +33,110 @@
                 data-bs-toggle="modal"
                 data-bs-target="#cadastrarPedido"
                 id="openModalCadastro"
+                aria-haspopup="dialog"
+                aria-controls="cadastrarPedido"
+                aria-label="Adicionar novo pedido"
               >
-                Adicionar
+                Adicionar Pedido
               </button>
             </div>
           </div>
         </div>
-      </header>
+      </section>
       <hr />
 
-      <div class="row mt-4 d-flex justify-content-center mb-4">
+      <section
+        class="row mt-4 d-flex justify-content-center mb-4"
+        aria-labelledby="status-pedidos-heading"
+      >
+        <h2 id="status-pedidos-heading" class="visually-hidden">
+          Resumo e Status dos Pedidos
+        </h2>
         <div class="col-md-3">
           <div class="card border-success">
             <div class="card-body text-center">
-              <h5 class="card-title text-success">Pedidos faturados</h5>
-              <h2 class="text-success">-</h2>
+              <h5 class="card-title text-success">Pedidos Faturados</h5>
+              <p
+                class="h2 text-success"
+                id="contadorFaturados"
+                aria-live="polite"
+              >
+                -
+              </p>
+              <p class="card-text visually-hidden">
+                Número de pedidos faturados.
+              </p>
             </div>
           </div>
         </div>
         <div class="col-md-3">
           <div class="card border-primary">
             <div class="card-body text-center">
-              <h5 class="card-title text-primary">Pedidos em andamento</h5>
-              <h2 class="text-primary">-</h2>
+              <h5 class="card-title text-primary">Pedidos em Andamento</h5>
+              <p
+                class="h2 text-primary"
+                id="contadorEmAndamento"
+                aria-live="polite"
+              >
+                -
+              </p>
+              <p class="card-text visually-hidden">
+                Número de pedidos em andamento.
+              </p>
             </div>
           </div>
         </div>
         <div class="col-md-3">
           <div class="card border-warning">
             <div class="card-body text-center">
-              <h5 class="card-title text-warning">Valor faturado</h5>
-              <h2 class="text-warning">-</h2>
+              <h5 class="card-title text-warning">Valor Faturado</h5>
+              <p class="h2 text-warning" id="valorFaturado" aria-live="polite">
+                -
+              </p>
+              <p class="card-text visually-hidden">
+                Valor total dos pedidos faturados.
+              </p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="card mb-4">
+      <section class="card mb-4" aria-labelledby="lista-pedidos-heading">
         <div
           class="card-header d-flex justify-content-between align-items-center"
         >
-          <h5 class="card-title mb-0">Pedidos</h5>
-          <span class="badge bg-primary" id="totalPedidos"></span>
+          <h5 class="card-title mb-0" id="lista-pedidos-heading">
+            Lista de Pedidos
+          </h5>
+          <span
+            class="badge bg-primary"
+            id="totalPedidos"
+            aria-live="polite"
+          ></span>
         </div>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-striped table-hover">
+              <caption>
+                Tabela com a lista completa de pedidos, incluindo cliente,
+                receita, valor, data de entrega e status.
+              </caption>
               <thead class="table-dark">
                 <tr>
-                  <th>Cliente</th>
-                  <th>Receita</th>
-                  <th>Proporção</th>
-                  <th>Data entrega</th>
-                  <th>Valor total</th>
-                  <th>Status</th>
-                  <th>Ações</th>
+                  <th scope="col">Cliente</th>
+                  <th scope="col">Receita</th>
+                  <th scope="col">Proporção</th>
+                  <th scope="col">Data Entrega</th>
+                  <th scope="col">Valor Total</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Ações</th>
                 </tr>
               </thead>
               <tbody id="tabelaPedidos">
                 <tr>
                   <td colspan="7" class="text-center text-muted py-5">
                     <div class="spinner-border text-dark" role="status">
-                      <span class="visually-hidden">Loading...</span>
+                      <span class="visually-hidden">Carregando pedidos...</span>
                     </div>
                   </td>
                 </tr>
@@ -101,45 +144,65 @@
             </table>
           </div>
         </div>
-      </div>
+      </section>
     </main>
 
     <div
       class="modal fade"
       id="cadastrarPedido"
       tabindex="-1"
-      aria-labelledby="exampleModalLabel"
+      aria-labelledby="tituloFormularioPedido"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="tituloFormulario">
+            <h2 class="modal-title fs-5" id="tituloFormularioPedido">
               Cadastro de pedido
-            </h1>
+            </h2>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
-              aria-label="Close"
+              aria-label="Fechar formulário de cadastro de pedido"
             ></button>
           </div>
           <div class="modal-body">
-            <form id="formCliente">
+            <form id="formPedido">
               <div class="mb-3">
                 <label for="cliente" class="form-label">Cliente</label>
-                <select class="form-select" id="cliente" required>
+                <select
+                  class="form-select"
+                  id="cliente"
+                  required
+                  aria-required="true"
+                  aria-describedby="clienteHelp"
+                >
                   <option selected disabled value="">
                     Selecione um cliente...
                   </option>
                 </select>
+                <div id="clienteHelp" class="form-text visually-hidden">
+                  Selecione o cliente associado a este pedido.
+                </div>
               </div>
               <div class="row">
                 <div class="col-md-9 col-sm-6 mb-3">
                   <label for="receita" class="form-label">Receita</label>
-                  <select class="form-select" id="receita" required>
-                    <option selected disabled value="">Selecione</option>
+                  <select
+                    class="form-select"
+                    id="receita"
+                    required
+                    aria-required="true"
+                    aria-describedby="receitaHelp"
+                  >
+                    <option selected disabled value="">
+                      Selecione a receita...
+                    </option>
                   </select>
+                  <div id="receitaHelp" class="form-text visually-hidden">
+                    Selecione a receita para este pedido.
+                  </div>
                 </div>
                 <div class="col-md-3 col-sm-6 mb-3">
                   <label for="proporcao" class="form-label">Proporção</label>
@@ -149,35 +212,58 @@
                     min="0"
                     id="proporcao"
                     required
+                    aria-required="true"
+                    aria-describedby="proporcaoHelp"
                   />
+                  <div id="proporcaoHelp" class="form-text visually-hidden">
+                    Quantidade da receita. Ex: 1 para uma receita completa, 0.5
+                    para meia.
+                  </div>
                 </div>
               </div>
               <fieldset class="card mb-3 p-3">
                 <legend class="float-none w-auto px-3 fs-6 fw-bold">
-                  Ingredientes necessários
+                  Ingredientes Necessários
                 </legend>
-                <div class="row" id="ingredientesNecessarios"></div>
+                <div class="row" id="ingredientesNecessarios">
+                  <p class="text-muted col-12">
+                    Os ingredientes necessários serão listados aqui após
+                    selecionar uma receita.
+                  </p>
+                </div>
               </fieldset>
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="dataEntrega" class="form-label"
-                    >Data de entrega</label
+                    >Data de Entrega</label
                   >
                   <input
-                    type="text"
+                    type="date"
                     class="form-control"
                     id="dataEntrega"
                     required
+                    aria-required="true"
+                    aria-describedby="dataEntregaHelp"
                   />
+                  <div id="dataEntregaHelp" class="form-text visually-hidden">
+                    Data em que o pedido deve ser entregue.
+                  </div>
                 </div>
                 <div class="col-md-6 mb-3">
-                  <label for="valorTotal" class="form-label">Valor total</label>
+                  <label for="valorTotal" class="form-label">Valor Total</label>
                   <input
                     type="number"
                     class="form-control"
                     id="valorTotal"
+                    min="0"
+                    step="0.01"
                     required
+                    aria-required="true"
+                    aria-describedby="valorTotalHelp"
                   />
+                  <div id="valorTotalHelp" class="form-text visually-hidden">
+                    O valor total do pedido. Use pontos para decimais.
+                  </div>
                 </div>
               </div>
             </form>
@@ -190,8 +276,8 @@
             >
               Fechar
             </button>
-            <button type="button" class="btn btn-primary" id="btnSalvarCliente">
-              Salvar
+            <button type="button" class="btn btn-primary" id="btnSalvarPedido">
+              Salvar Pedido
             </button>
           </div>
         </div>
@@ -203,7 +289,6 @@
     <script src="../scripts/app.js" type="module"></script>
     <script src="../scripts/admin/pedidos.js"></script>
 
-    <!-- Firebase -->
     <script defer src="/__/firebase/11.9.0/firebase-app-compat.js"></script>
     <script defer src="/__/firebase/11.9.0/firebase-auth-compat.js"></script>
     <script
@@ -212,7 +297,6 @@
     ></script>
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
 
-    <!-- Bootstrap-->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
