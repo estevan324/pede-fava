@@ -48,7 +48,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert(
           "Ingrediente e suas movimentações de estoque foram excluídos com sucesso!"
         );
-        await getAndDisplayIngredientes();
+
+        await getEstoqueIngrediente(db).then((result) => {
+          ingredientes = result;
+          displayIngredientes(result);
+        });
       } catch (error) {
         console.error("Erro ao excluir ingrediente:", error);
         alert(
@@ -88,17 +92,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     formIngrediente.reset();
   });
 
-  async function getAndDisplayIngredientes() {
+  function displayIngredientes(ingredientesParaExibir) {
     try {
-      ingredientes = await getEstoqueIngrediente(db);
-
       let quantidadeStatusEstoque = {
         zerado: 0,
         baixo: 0,
         normal: 0,
       };
 
-      for (let ingrediente of ingredientes) {
+      for (let ingrediente of ingredientesParaExibir) {
         let statusEstoque = "";
         let statusClass = "";
 
@@ -128,12 +130,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       estoqueZerado.textContent = quantidadeStatusEstoque.zerado;
 
       tabelaIngredientesBody.innerHTML = "";
-      totalIngredientesSpan.innerHTML = `${ingredientes.length} ingredientes`;
+      totalIngredientesSpan.innerHTML = `${ingredientesParaExibir.length} ingredientes`;
 
-      if (ingredientes.length > 0) {
-        ingredientes.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+      if (ingredientesParaExibir.length > 0) {
+        ingredientesParaExibir.sort(
+          (a, b) => (b.timestamp || 0) - (a.timestamp || 0)
+        );
 
-        ingredientes.forEach((ingrediente) => {
+        ingredientesParaExibir.forEach((ingrediente) => {
           const row = tabelaIngredientesBody.insertRow();
           row.insertCell(0).textContent = ingrediente.nome;
           row.insertCell(1).textContent = ingrediente.unidadeMedida;
@@ -176,7 +180,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  await getAndDisplayIngredientes();
+  getEstoqueIngrediente(db).then((result) => {
+    ingredientes = result;
+    displayIngredientes(result);
+  });
 
   btnSalvarIngrediente.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -234,13 +241,49 @@ document.addEventListener("DOMContentLoaded", async () => {
         modal.hide();
       }
 
-      await getAndDisplayIngredientes();
+      getEstoqueIngrediente(db).then((result) => {
+        ingredientes = result;
+        displayIngredientes(result);
+      });
     } catch (e) {
       console.error("Erro ao salvar documento: ", e);
       alert(
         "Erro ao salvar o ingrediente. Verifique o console para mais detalhes."
       );
     }
+  });
+
+  const filtroNomeInput = document.getElementById("filtroNome");
+  const filtroStatusSelect = document.getElementById("filtroStatus");
+  const handleFiltroChange = async () => {
+    console.log(ingredientes);
+    const filtros = {
+      nome: filtroNomeInput.value,
+      status: filtroStatusSelect.value,
+    };
+
+    const ingredientesFiltrados = ingredientes.filter((ingrediente) => {
+      const termoNome = filtros.nome ? filtros.nome.trim().toLowerCase() : "";
+      const termoStatus = filtros.status;
+
+      const matchNome = termoNome
+        ? ingrediente.nome.toLowerCase().includes(termoNome)
+        : true;
+      const matchStatus = termoStatus
+        ? ingrediente.status.toLowerCase() === termoStatus
+        : true;
+
+      return matchNome && matchStatus;
+    });
+
+    displayIngredientes(ingredientesFiltrados);
+  };
+
+  filtroNomeInput.addEventListener("input", handleFiltroChange);
+  filtroStatusSelect.addEventListener("change", handleFiltroChange);
+
+  document.getElementById("btnLimparFiltros").addEventListener("click", () => {
+    displayIngredientes(ingredientes);
   });
 
   firebase.auth().onAuthStateChanged((user) => {

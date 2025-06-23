@@ -87,6 +87,56 @@
         </div>
       </section>
 
+      <section class="mb-4" aria-labelledby="filtros-heading">
+        <form id="formFiltros" role="search">
+          <fieldset class="card">
+            <legend id="filtros-heading" class="card-header h5">
+              Filtros de Ingredientes
+            </legend>
+            <div class="card-body">
+              <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                  <label for="filtroNome" class="form-label"
+                    >Buscar por Nome</label
+                  >
+                  <input
+                    type="search"
+                    class="form-control"
+                    id="filtroNome"
+                    placeholder="Ex: Farinha de Trigo"
+                    aria-label="Buscar ingrediente pelo nome"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="filtroStatus" class="form-label"
+                    >Filtrar por Status</label
+                  >
+                  <select
+                    id="filtroStatus"
+                    class="form-select"
+                    aria-label="Filtrar ingredientes pelo status do estoque"
+                  >
+                    <option value="">Todos os Status</option>
+                    <option value="normal">Estoque Normal</option>
+                    <option value="baixo">Estoque Baixo</option>
+                    <option value="zerado">Estoque Zerado</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <button
+                    type="reset"
+                    id="btnLimparFiltros"
+                    class="btn btn-secondary w-100"
+                  >
+                    Limpar Filtros
+                  </button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </section>
+
       <section class="card mb-4" aria-labelledby="lista-ingredientes-heading">
         <div
           class="card-header d-flex justify-content-between align-items-center"
