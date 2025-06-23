@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let movimentacoes = [];
   let ingredientes = [];
 
-  async function getAndDisplayEstoque() {
+  async function getEstoque() {
     movimentacoes = [];
     ingredientes = [];
 
@@ -37,6 +37,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         ...i,
       });
     });
+
+    for (const ingrediente of ingredientes) {
+      let option = document.createElement("option");
+
+      option.label = ingrediente.nome;
+      option.value = ingrediente.id;
+
+      filtroIngredienteSelect.add(option);
+    }
 
     for (const movimentacaoDoc of allMovimentacoesSnapshot.docs) {
       const data = movimentacaoDoc.data();
@@ -69,13 +78,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         ingredienteId: ingrediente.id,
       });
     }
+  }
 
+  function displayEstoque(movimentacoesParaExibir) {
     tabelaMovimentacoes.innerHTML = "";
 
-    if (movimentacoes.length > 0) {
-      movimentacoes.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    if (movimentacoesParaExibir.length > 0) {
+      movimentacoesParaExibir.sort(
+        (a, b) => (b.timestamp || 0) - (a.timestamp || 0)
+      );
 
-      movimentacoes.forEach((movimentacao) => {
+      movimentacoesParaExibir.forEach((movimentacao) => {
         const row = tabelaMovimentacoes.insertRow();
         row.insertCell(0).textContent = new Date(
           movimentacao.timestamp.seconds * 1000
@@ -100,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  await getAndDisplayEstoque();
+  getEstoque().then(() => displayEstoque(movimentacoes));
 
   ingredientesSelect.addEventListener("change", (e) => {
     const ingrediente = ingredientes.find((i) => i.id === e.target.value);
@@ -163,7 +176,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         modal.hide();
       }
 
-      await getAndDisplayEstoque();
+      getEstoque().then(() => displayEstoque(movimentacoes));
     } catch (e) {
       console.error("Erro ao adicionar documento: ", e);
       alert(
@@ -171,6 +184,66 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
     }
   });
+
+  const filtroIngredienteSelect = document.getElementById("filtroIngrediente");
+  const filtroTipoMovimentacaoSelect = document.getElementById("filtroTipo");
+  const filtroDataInicio = document.getElementById("filtroDataInicio");
+  const filtroDataFim = document.getElementById("filtroDataFim");
+
+  const handleFiltroChange = () => {
+    const filtros = {
+      ingrediente: filtroIngredienteSelect.value,
+      tipo: filtroTipoMovimentacaoSelect.value,
+      periodo: {
+        dataInicio: filtroDataInicio.value,
+        dataFim: filtroDataFim.value,
+      },
+    };
+
+    const estoque = movimentacoes.filter((movimentacao) => {
+      console.log(movimentacao);
+
+      if (!movimentacao.timestamp || !movimentacao.timestamp.toDate) {
+        return false;
+      }
+
+      const matchIngrediente = filtros.ingrediente
+        ? movimentacao.ingredienteId.includes(filtros.ingrediente)
+        : true;
+
+      const dataMovimentacao = movimentacao.timestamp.toDate();
+
+      const matchTipo = filtros.tipo
+        ? movimentacao.tipo.includes(filtros.tipo)
+        : true;
+
+      const matchDataInicio = filtros.periodo.dataInicio
+        ? dataMovimentacao >= new Date(filtros.periodo.dataInicio)
+        : true;
+
+      const matchDataFim = filtros.periodo.dataFim
+        ? (() => {
+            const dataFimAjustada = new Date(filtros.periodo.dataFim);
+            dataFimAjustada.setHours(23, 59, 59, 999);
+            return dataMovimentacao <= dataFimAjustada;
+          })()
+        : true;
+
+      return matchTipo && matchDataInicio && matchDataFim && matchIngrediente;
+    });
+    displayEstoque(estoque);
+  };
+
+  filtroIngredienteSelect.addEventListener("change", handleFiltroChange);
+  filtroTipoMovimentacaoSelect.addEventListener("change", handleFiltroChange);
+  filtroDataFim.addEventListener("input", handleFiltroChange);
+  filtroDataInicio.addEventListener("input", handleFiltroChange);
+
+  document
+    .getElementById("btnLimparFiltrosEstoque")
+    .addEventListener("click", () => {
+      displayEstoque(movimentacoes);
+    });
 
   firebase.auth().onAuthStateChanged((user) => {
     if (!user) {

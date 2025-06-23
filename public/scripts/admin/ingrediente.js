@@ -255,8 +255,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const filtroNomeInput = document.getElementById("filtroNome");
   const filtroStatusSelect = document.getElementById("filtroStatus");
-  const handleFiltroChange = async () => {
-    console.log(ingredientes);
+  const handleFiltroChange = () => {
     const filtros = {
       nome: filtroNomeInput.value,
       status: filtroStatusSelect.value,

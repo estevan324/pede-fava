@@ -38,6 +38,77 @@
         </div>
       </section>
 
+      <section class="mb-4" aria-labelledby="filtros-heading">
+        <form id="formFiltrosEstoque" role="search">
+          <fieldset class="card">
+            <legend id="filtros-heading" class="card-header h5">
+              Filtrar Histórico
+            </legend>
+            <div class="card-body">
+              <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                  <label for="filtroIngrediente" class="form-label"
+                    >Ingrediente</label
+                  >
+                  <select
+                    id="filtroIngrediente"
+                    class="form-select"
+                    aria-label="Filtrar por ingrediente"
+                  >
+                    <option value="">Todos</option>
+                  </select>
+                </div>
+
+                <div class="col-md-3">
+                  <label for="filtroTipo" class="form-label"
+                    >Tipo de Movimentação</label
+                  >
+                  <select
+                    id="filtroTipo"
+                    class="form-select"
+                    aria-label="Filtrar por tipo de movimentação"
+                  >
+                    <option value="">Todos</option>
+                    <option value="entrada">Entrada</option>
+                    <option value="saida">Saída</option>
+                    <option value="ajuste">Ajuste</option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Período</label>
+                  <div class="input-group">
+                    <input
+                      type="date"
+                      id="filtroDataInicio"
+                      class="form-control"
+                      aria-label="Data de início do período"
+                    />
+                    <span class="input-group-text">até</span>
+                    <input
+                      type="date"
+                      id="filtroDataFim"
+                      class="form-control"
+                      aria-label="Data de fim do período"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-2">
+                  <button
+                    type="reset"
+                    id="btnLimparFiltrosEstoque"
+                    class="btn btn-secondary w-100"
+                  >
+                    Limpar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </section>
+
       <section class="card mt-4">
         <div class="card-header">
           <h5 class="card-title mb-0">Histórico de Movimentações</h5>
