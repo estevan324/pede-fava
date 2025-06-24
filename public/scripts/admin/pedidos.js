@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           ...data,
         });
       }
+    tabelaPedidoBody.innerHTML = "";
 
       totalPedidosSpan.innerHTML = "";
       totalPedidosSpan.innerHTML = `${pedidos.length} pedidos`;
@@ -60,14 +61,15 @@ document.addEventListener("DOMContentLoaded", async () => {
           actionsCell
             .querySelector(".btn-excluir")
             .addEventListener("click", () => {
-              // TODO: implementar
+              excluirPedido(pedido.id);
             });
           actionsCell
             .querySelector(".btn-faturar")
             .addEventListener("click", () => {
               // TODO: implementar
             });
-        });
+
+          });
       } else {
         tabelaPedidoBody.innerHTML = `
                 <tr>
@@ -177,6 +179,57 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  async function salvarPedido() {
+    const clienteId = document.getElementById("cliente").value;
+    const receitaId = document.getElementById("receita").value;
+    const proporcao = parseFloat(document.getElementById("proporcao").value);
+    const dataEntrega = document.getElementById("dataEntrega").value;
+    const valorTotal = parseFloat(document.getElementById("valorTotal").value);
+
+    if (!clienteId || !receitaId || !proporcao || !dataEntrega || !valorTotal) {
+      alert("Preencha todos os campos corretamente.");
+      return;
+    }
+
+    try {
+      const clienteDoc = await firebase.firestore().collection("clientes").doc(clienteId).get();
+      const receitaDoc = await firebase.firestore().collection("receitas").doc(receitaId).get();
+
+      const clienteData = clienteDoc.data();
+      const receitaData = receitaDoc.data();
+
+      const novoPedido = {
+        cliente: {
+          id: clienteId,
+          nome: clienteData.nome,
+        },
+        receita: {
+          id: receitaId,
+          nome: receitaData.nomeReceita,
+        },
+        proporcao,
+        dataEntrega,
+        valorTotal,
+        status: "Em andamento",
+        timestamp: Date.now(),
+      };
+
+      await firebase.firestore().collection("pedidos").add(novoPedido);
+
+      await getPedidosAndDisplay();
+      const modal = bootstrap.Modal.getInstance(document.getElementById("cadastrarPedido"));
+      modal.hide();
+
+      document.getElementById("formPedido").reset();
+      document.getElementById("ingredientesNecessarios").innerHTML = `<p class="text-muted col-12">Os ingredientes necessários serão listados aqui após selecionar uma receita.</p>`;
+
+      alert("Pedido salvo com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar pedido:", error);
+      alert("Erro ao salvar pedido.");
+    }
+  }
+
   receitaSelect.addEventListener("change", (e) =>
     showIngredientes(e.target.value)
   );
@@ -191,4 +244,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   await Promise.all([getClientes(), getReceitas(), getPedidosAndDisplay()]);
+  document.getElementById("btnSalvarPedido").addEventListener("click", salvarPedido);
+
+  async function excluirPedido(id) {
+    const confirmado = confirm("Tem certeza que deseja excluir este pedido?");
+    if (!confirmado) return;
+  
+    try {
+      await firebase.firestore().collection("pedidos").doc(id).delete();
+      console.log("Pedido excluído com sucesso:", id);
+      await getPedidosAndDisplay(); // Atualiza a tabela
+    } catch (error) {
+      console.error("Erro ao excluir pedido:", error);
+      alert("Erro ao excluir o pedido. Verifique o console.");
+    }
+  }
 });
