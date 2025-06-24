@@ -15,6 +15,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         receita[key] = value;
       });
 
+      const ingredientes = [];
+      const tbody = document.getElementById("listaIngredientesReceita");
+
+      tbody.querySelectorAll("tr").forEach((tr) => {
+        if (tr.id === "semIngredientes") return;
+
+        const tds = tr.querySelectorAll("td");
+
+        ingredientes.push({
+          nome: tds[0].textContent.trim(),
+          quantidade: parseFloat(tds[1].textContent.trim()),
+          unidade: tds[2].textContent.trim(),
+          precoUnitario: parseFloat(tds[3].textContent.replace(/[^\d.,]/g, "").replace(",", ".").trim()),
+          custoTotal: parseFloat(tds[4].textContent.replace(/[^\d.,]/g, "").replace(",", ".").trim()),
+        });
+      });
+
+      receita.ingredientes = ingredientes;
+
       let resultado = await salvarReceita(receita);
       if (resultado) {
         window.alert("Receita salva com sucesso!");

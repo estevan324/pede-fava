@@ -1,3 +1,7 @@
+const STATUS_EM_ANDAMENTO = "Em andamento";
+const STATUS_FATURADO = "Faturado";
+const STATUS_CANCELADO = "Cancelado";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const db = firebase.firestore();
 
@@ -32,10 +36,27 @@ document.addEventListener("DOMContentLoaded", async () => {
           ...data,
         });
       }
-    tabelaPedidoBody.innerHTML = "";
+      tabelaPedidoBody.innerHTML = "";
 
-      totalPedidosSpan.innerHTML = "";
       totalPedidosSpan.innerHTML = `${pedidos.length} pedidos`;
+
+      // Cálculo dos status e valor faturado
+      const pedidosFaturados = pedidos.filter(
+        (p) => p.status === STATUS_FATURADO
+      ).length;
+
+      const pedidosEmAndamento = pedidos.filter(
+        (p) => p.status === STATUS_EM_ANDAMENTO
+      ).length;
+
+      const valorTotalFaturado = pedidos
+        .filter((p) => p.status === STATUS_FATURADO)
+        .reduce((acc, p) => acc + Number(p.valorTotal || 0), 0);
+
+      // Atualiza os elementos na página
+      document.getElementById("contadorFaturados").textContent = pedidosFaturados;
+      document.getElementById("contadorEmAndamento").textContent = pedidosEmAndamento;
+      document.getElementById("valorFaturado").textContent = valorTotalFaturado.toFixed(2);
 
       if (pedidos.length > 0) {
         pedidos.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -49,35 +70,52 @@ document.addEventListener("DOMContentLoaded", async () => {
           row.insertCell(3).textContent = pedido.dataEntrega;
           row.insertCell(4).textContent = pedido.valorTotal;
 
-          // TODO: colocar span no lugar do texto
-          row.insertCell(5).textContent = pedido.status;
+          // Status com span para estilização
+          const statusCell = row.insertCell(5);
+          statusCell.innerHTML = `<span class="badge ${
+            pedido.status === STATUS_FATURADO
+              ? "bg-success"
+              : pedido.status === STATUS_EM_ANDAMENTO
+              ? "bg-primary"
+              : "bg-secondary"
+          }">${pedido.status}</span>`;
 
           const actionsCell = row.insertCell(6);
 
-          actionsCell.innerHTML = `
-            <button class="btn btn-sm btn-info me-2 btn-faturar" data-id="${pedido.id}">Faturar</button>
-            <button class="btn btn-sm btn-danger btn-excluir" data-id="${pedido.id}">Excluir</button>
-          `;
-          actionsCell
-            .querySelector(".btn-excluir")
-            .addEventListener("click", () => {
+          if (pedido.status === STATUS_FATURADO) {
+            // Botão somente indicando faturado, desabilitado ou só visual
+            actionsCell.innerHTML = `
+              <button class="btn btn-sm btn-success" disabled>
+                Faturado
+              </button>
+              <button class="btn btn-sm btn-danger btn-excluir" data-id="${pedido.id}">Excluir</button>
+            `;
+
+            actionsCell.querySelector(".btn-excluir").addEventListener("click", () => {
               excluirPedido(pedido.id);
             });
-          actionsCell
-            .querySelector(".btn-faturar")
-            .addEventListener("click", () => {
-              // TODO: implementar
+          } else {
+            // Botões normais para status que não são faturados
+            actionsCell.innerHTML = `
+              <button class="btn btn-sm btn-info me-2 btn-faturar" data-id="${pedido.id}">Faturar</button>
+              <button class="btn btn-sm btn-danger btn-excluir" data-id="${pedido.id}">Excluir</button>
+            `;
+            actionsCell.querySelector(".btn-excluir").addEventListener("click", () => {
+              excluirPedido(pedido.id);
             });
-
-          });
+            actionsCell.querySelector(".btn-faturar").addEventListener("click", () => {
+              faturarPedido(pedido.id);
+            });
+          }
+        });
       } else {
         tabelaPedidoBody.innerHTML = `
-                <tr>
-                  <td colspan="7" class="text-center text-muted">
-                    Nenhum pedido cadastrado
-                  </td>
-                </tr>
-            `;
+          <tr>
+            <td colspan="7" class="text-center text-muted">
+              Nenhum pedido cadastrado
+            </td>
+          </tr>
+        `;
       }
     } catch (error) {
       console.error("Erro ao obter clientes:", error);
@@ -112,24 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       receitaSelect.add(option);
 
-      // TODO: retirar esse trecho de código, porém preencher no cadastro de receitas os ingredientes neste exato formato
-      const ingredientes = [
-        {
-          nome: "Açúcar",
-          medida: "g",
-          quantidade: 500,
-        },
-        {
-          nome: "Farinha de trigo",
-          medida: "g",
-          quantidade: 1000,
-        },
-        {
-          nome: "Ovos",
-          medida: "un",
-          quantidade: 3,
-        },
-      ];
+      const ingredientes = data.ingredientes || [];
 
       receitas.push({
         id: receitaDoc.id,
@@ -171,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <input
                         type="text"
                         class="form-control"
-                        value="${ingrediente.medida || ""}"
+                        value="${ingrediente.unidade || ""}"
                         readonly
                     />
                 </div>
@@ -210,7 +231,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         proporcao,
         dataEntrega,
         valorTotal,
-        status: "Em andamento",
+        status: STATUS_EM_ANDAMENTO,
         timestamp: Date.now(),
       };
 
@@ -251,12 +272,44 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!confirmado) return;
   
     try {
+      const pedidoDoc = await firebase.firestore().collection("pedidos").doc(id).get();
+      if (!pedidoDoc.exists) {
+        alert("Pedido não encontrado.");
+        return;
+      }
+      const pedidoData = pedidoDoc.data();
+      if (pedidoData.status === STATUS_FATURADO) {
+        alert("Não é possível excluir pedidos já faturados.");
+        return;
+      }
       await firebase.firestore().collection("pedidos").doc(id).delete();
+
       console.log("Pedido excluído com sucesso:", id);
-      await getPedidosAndDisplay(); // Atualiza a tabela
+      await getPedidosAndDisplay();
     } catch (error) {
       console.error("Erro ao excluir pedido:", error);
       alert("Erro ao excluir o pedido. Verifique o console.");
     }
   }
+
+  async function faturarPedido(idPedido) {
+  const confirmado = confirm("Deseja realmente faturar este pedido?");
+
+  if (!confirmado) return;
+
+  try {
+    const pedidoRef = db.collection("pedidos").doc(idPedido);
+
+    await pedidoRef.update({
+      status: STATUS_FATURADO,
+    });
+
+    alert("Pedido faturado com sucesso!");
+    await getPedidosAndDisplay(); // Atualiza a tabela para refletir o novo status
+  } catch (error) {
+    console.error("Erro ao faturar pedido:", error);
+    alert("Erro ao faturar pedido. Verifique o console.");
+  }
+}
+
 });

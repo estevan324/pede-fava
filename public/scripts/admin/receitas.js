@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const db = firebase.firestore();
+
   firebase.auth().onAuthStateChanged((user) => {
     if (!user) {
       localStorage.setItem("backPage", "/admin/receitas.html");
@@ -7,107 +8,208 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  exibirReceitasNaTabela(db);
-});
+  const inputBuscar = document.getElementById("buscarReceita");
+  const selectCategoria = document.getElementById("filtroCategoria");
+  const selectOrdenar = document.getElementById("ordenarPor");
 
-async function exibirReceitasNaTabela(db) {
-  const receitas = await pegarReceitas(db);
-  const tabela = document.getElementById("tabelaReceitas");
-  const totalSpan = document.getElementById("totalReceitas");
-  const estatisticaTotal = document.getElementById("estatisticaTotal");
+  async function exibirReceitasNaTabela(db, filtros = {}) {
+    const receitas = await pegarReceitas(db, filtros);
+    const tabela = document.getElementById("tabelaReceitas");
+    const totalSpan = document.getElementById("totalReceitas");
+    const estatisticaTotal = document.getElementById("estatisticaTotal");
 
-  tabela.innerHTML = "";
+    tabela.innerHTML = "";
 
-  if (receitas.length === 0) {
-    tabela.innerHTML = `
-      <tr>
-        <td colspan="7" class="text-center text-muted">
-          Nenhuma receita cadastrada ainda.<br />
-          <a href="cadastro-receitas.html" class="btn btn-primary btn-sm mt-2">
-            Cadastrar Primeira Receita
-          </a>
+    if (receitas.length === 0) {
+      tabela.innerHTML = `
+        <tr>
+          <td colspan="7" class="text-center text-muted">
+            Nenhuma receita cadastrada ainda.<br />
+            <a href="cadastro-receitas.html" class="btn btn-primary btn-sm mt-2">
+              Cadastrar Primeira Receita
+            </a>
+          </td>
+        </tr>
+      `;
+      totalSpan.textContent = "0 receitas";
+      estatisticaTotal.textContent = "0";
+      return;
+    }
+
+    let menorCusto = Infinity;
+    let maiorCusto = 0;
+    let somaTempo = 0;
+
+    receitas.forEach((receita) => {
+      const {
+        id,
+        nomeReceita,
+        categoriaReceita,
+        tempoPreparo,
+        rendimento,
+        custoTotal = 0,
+        custoPorcao = 0,
+      } = receita;
+
+      const linha = document.createElement("tr");
+      linha.innerHTML = `
+        <td>${nomeReceita}</td>
+        <td>${categoriaReceita}</td>
+        <td>${tempoPreparo} min</td>
+        <td>${rendimento}</td>
+        <td>R$ ${Number(custoTotal).toFixed(2)}</td>
+        <td>R$ ${Number(custoPorcao).toFixed(2)}</td>
+        <td>
+          <button class="btn btn-sm btn-primary btn-ver-receita" data-id="${id}">Ver</button>
+          <button class="btn btn-sm btn-danger btn-excluir" data-id="${id}">Excluir</button>
         </td>
-      </tr>
-    `;
-    totalSpan.textContent = "0 receitas";
-    estatisticaTotal.textContent = "0";
-    return;
-  }
+      `;
 
-  let menorCusto = Infinity;
-  let maiorCusto = 0;
-  let somaTempo = 0;
+      tabela.appendChild(linha);
 
-  receitas.forEach((receita) => {
-    const {
-      id,
-      nomeReceita,
-      categoriaReceita,
-      tempoPreparo,
-      rendimento,
-      custoTotal = 0,
-      custoPorcao = 0,
-    } = receita;
+      const custoNum = parseFloat(custoPorcao);
+      const tempoNum = parseFloat(tempoPreparo);
+      if (custoNum < menorCusto) menorCusto = custoNum;
+      if (custoNum > maiorCusto) maiorCusto = custoNum;
+      somaTempo += tempoNum;
 
-    const linha = document.createElement("tr");
-    linha.innerHTML = `
-      <td>${nomeReceita}</td>
-      <td>${categoriaReceita}</td>
-      <td>${tempoPreparo} min</td>
-      <td>${rendimento}</td>
-      <td>R$ ${Number(custoTotal).toFixed(2)}</td>
-      <td>R$ ${Number(custoPorcao).toFixed(2)}</td>
-      <td>
-        <button class="btn btn-sm btn-primary">Ver</button>
-        <button class="btn btn-sm btn-danger btn-excluir" data-id="${id}">Excluir</button>
-      </td>
-    `;
-
-    tabela.appendChild(linha);
-
-    // Estatísticas
-    const custoNum = parseFloat(custoPorcao);
-    const tempoNum = parseFloat(tempoPreparo);
-    if (custoNum < menorCusto) menorCusto = custoNum;
-    if (custoNum > maiorCusto) maiorCusto = custoNum;
-    somaTempo += tempoNum;
-  });
-
-  totalSpan.textContent = `${receitas.length} receita${receitas.length > 1 ? 's' : ''}`;
-  estatisticaTotal.textContent = receitas.length;
-
-  document.getElementById("receitaMaisBarata").textContent = `R$ ${menorCusto.toFixed(2)}`;
-  document.getElementById("receitaMaisCara").textContent = `R$ ${maiorCusto.toFixed(2)}`;
-  document.getElementById("tempoMedio").textContent = `${Math.round(somaTempo / receitas.length)} min`;
-
-  // 🔁 Adiciona listeners nos botões de excluir
-  document.querySelectorAll(".btn-excluir").forEach((botao) => {
-    botao.addEventListener("click", async () => {
-      const id = botao.getAttribute("data-id");
-      const confirmado = confirm("Tem certeza que deseja excluir esta receita?");
-      if (confirmado) {
-        await excluirReceita(id);
-        exibirReceitasNaTabela(firebase.firestore()); // Atualiza a tabela
-      }
+      linha.querySelector(".btn-ver-receita").addEventListener("click", () => {
+        verReceita(id);
+      });
     });
-  });
-}
 
-async function pegarReceitas(db) {
-  const querySnapshot = await db.collection("receitas").get();
+    totalSpan.textContent = `${receitas.length} receita${receitas.length > 1 ? 's' : ''}`;
+    estatisticaTotal.textContent = receitas.length;
 
-  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-}
+    document.getElementById("receitaMaisBarata").textContent = `R$ ${menorCusto.toFixed(2)}`;
+    document.getElementById("receitaMaisCara").textContent = `R$ ${maiorCusto.toFixed(2)}`;
+    document.getElementById("tempoMedio").textContent = `${Math.round(somaTempo / receitas.length)} min`;
 
-async function excluirReceita(id) {
-  console.log("Excluindo receita:", id);
-  try {
-    await firebase.firestore().collection("receitas").doc(id).delete();
-    console.log("Receita excluída com sucesso:", id);
-    return true;
-  } catch (e) {
-    console.error("Erro ao excluir receita:", e);
-    alert("Erro ao excluir a receita. Tente novamente.");
-    return false;
+    document.querySelectorAll(".btn-excluir").forEach((botao) => {
+      botao.addEventListener("click", async () => {
+        const id = botao.getAttribute("data-id");
+        const confirmado = confirm("Tem certeza que deseja excluir esta receita?");
+        if (confirmado) {
+          await excluirReceita(id);
+          exibirReceitasNaTabela(db, filtros);
+        }
+      });
+    });
   }
-}
+
+  async function pegarReceitas(db, filtros) {
+    let query = db.collection("receitas");
+    const { nomeBusca, categoriaFiltro, ordenarPor } = filtros;
+
+    if (categoriaFiltro && categoriaFiltro !== "") {
+      query = query.where("categoriaReceita", "==", categoriaFiltro);
+    }
+
+    if (ordenarPor && ordenarPor !== "") {
+      const camposOrdenacao = {
+        nome: "nomeReceita",
+        categoria: "categoriaReceita",
+        tempo: "tempoPreparo",
+        custo: "custoTotal",
+      };
+      if (camposOrdenacao[ordenarPor]) {
+        query = query.orderBy(camposOrdenacao[ordenarPor]);
+      }
+    }
+
+    const snapshot = await query.get();
+
+    let receitas = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+    if (nomeBusca && nomeBusca !== "") {
+      const termo = nomeBusca.toLowerCase();
+      receitas = receitas.filter((r) =>
+        r.nomeReceita.toLowerCase().includes(termo)
+      );
+    }
+
+    return receitas;
+  }
+
+  function aplicarFiltros() {
+    const filtros = {
+      nomeBusca: inputBuscar.value.trim(),
+      categoriaFiltro: selectCategoria.value,
+      ordenarPor: selectOrdenar.value,
+    };
+    exibirReceitasNaTabela(db, filtros);
+  }
+
+  document.getElementById("btnBuscarReceita").addEventListener("click", aplicarFiltros);
+  inputBuscar.addEventListener("keyup", (e) => {
+    if (e.key === "Enter") aplicarFiltros();
+  });
+  selectCategoria.addEventListener("change", aplicarFiltros);
+  selectOrdenar.addEventListener("change", aplicarFiltros);
+
+  exibirReceitasNaTabela(db, { nomeBusca: "", categoriaFiltro: "", ordenarPor: "nome" });
+
+  async function verReceita(id) {
+    try {
+      const doc = await db.collection("receitas").doc(id).get();
+      if (!doc.exists) {
+        alert("Receita não encontrada!");
+        return;
+      }
+      const receita = doc.data();
+
+      document.getElementById("tituloVisualizarReceita").textContent = receita.nomeReceita || "Visualizar Receita";
+      document.getElementById("categoriaReceitaDetalhe").textContent = receita.categoriaReceita || "-";
+      document.getElementById("dificuldadeDetalhe").textContent = receita.dificuldade || "-";
+      document.getElementById("tempoPreparoDetalhe").textContent = receita.tempoPreparo || "-";
+      document.getElementById("rendimentoDetalhe").textContent = receita.rendimento || "-";
+      document.getElementById("custoTotalModal").textContent = receita.custoTotal ? `R$ ${Number(receita.custoTotal).toFixed(2)}` : "R$ 0,00";
+      document.getElementById("custoPorcaoModal").textContent = receita.custoPorcao ? `R$ ${Number(receita.custoPorcao).toFixed(2)}` : "R$ 0,00";
+      document.getElementById("observacoesDetalhe").textContent = receita.observacoes || "-";
+
+      const tbody = document.getElementById("ingredientesLista");
+      tbody.innerHTML = "";
+
+      if (!receita.ingredientes || receita.ingredientes.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center text-muted">Nenhum ingrediente listado.</td>
+          </tr>
+        `;
+      } else {
+        receita.ingredientes.forEach((ingrediente) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${ingrediente.nome || "-"}</td>
+            <td>${ingrediente.quantidade ?? "-"}</td>
+            <td>${ingrediente.unidade || "-"}</td>
+            <td>R$ ${Number(ingrediente.custoTotal ?? 0).toFixed(2)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      const modoPreparoDiv = document.getElementById("modoPreparoDetalhe");
+      modoPreparoDiv.textContent = receita.modoPreparo || "Nenhum modo de preparo disponível.";
+
+      const modal = new bootstrap.Modal(document.getElementById("modalVisualizarReceita"));
+      modal.show();
+
+    } catch (error) {
+      console.error("Erro ao carregar receita:", error);
+      alert("Erro ao carregar a receita.");
+    }
+  }
+
+  async function excluirReceita(id) {
+    try {
+      await db.collection("receitas").doc(id).delete();
+      return true;
+    } catch (e) {
+      console.error("Erro ao excluir receita:", e);
+      alert("Erro ao excluir a receita. Tente novamente.");
+      return false;
+    }
+  }
+
+});

@@ -225,101 +225,76 @@
       class="modal fade"
       id="modalVisualizarReceita"
       tabindex="-1"
-      aria-labelledby="tituloModalVisualizarReceita"
+      aria-labelledby="tituloVisualizarReceita"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="modal-title fs-5" id="tituloModalVisualizarReceita">
-              Visualizar Receita: <span id="tituloReceita"></span>
+            <h2 class="modal-title fs-5" id="tituloVisualizarReceita">
+              Visualizar Receita
             </h2>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
-              aria-label="Fechar visualização da receita"
+              aria-label="Fechar"
             ></button>
           </div>
           <div class="modal-body">
-            <div class="row">
+            <!-- Informações Gerais -->
+            <div class="row mb-3">
               <div class="col-md-6">
-                <h3>Informações Gerais</h3>
-                <p>
-                  <strong>Descrição:</strong>
-                  <span
-                    id="descricaoModal"
-                    aria-label="Descrição da receita"
-                  ></span>
-                </p>
                 <p>
                   <strong>Categoria:</strong>
-                  <span
-                    id="categoriaModal"
-                    aria-label="Categoria da receita"
-                  ></span>
+                  <span id="categoriaReceitaDetalhe" class="text-muted"></span>
+                </p>
+                <p>
+                  <strong>Dificuldade:</strong>
+                  <span id="dificuldadeDetalhe" class="text-muted"></span>
                 </p>
                 <p>
                   <strong>Tempo de Preparo:</strong>
-                  <span
-                    id="tempoModal"
-                    aria-label="Tempo de preparo em minutos"
-                  ></span>
-                  minutos
+                  <span id="tempoPreparoDetalhe" class="text-muted"></span> minutos
                 </p>
                 <p>
                   <strong>Rendimento:</strong>
-                  <span
-                    id="rendimentoModal"
-                    aria-label="Rendimento em porções"
-                  ></span>
-                  porções
+                  <span id="rendimentoDetalhe" class="text-muted"></span> porções
                 </p>
               </div>
               <div class="col-md-6">
-                <h3>Custos</h3>
                 <p>
                   <strong>Custo Total:</strong>
-                  <span
-                    id="custoTotalModal"
-                    aria-label="Custo total da receita"
-                  ></span>
+                  <span id="custoTotalModal" class="text-muted"></span>
                 </p>
                 <p>
                   <strong>Custo por Porção:</strong>
-                  <span
-                    id="custoPorcaoModal"
-                    aria-label="Custo por porção da receita"
-                  ></span>
+                  <span id="custoPorcaoModal" class="text-muted"></span>
+                </p>
+                <p>
+                  <strong>Observações:</strong><br />
+                  <span id="observacoesDetalhe" class="text-muted"></span>
                 </p>
               </div>
             </div>
 
             <hr />
 
-            <h3>Ingredientes</h3>
+            <!-- Ingredientes -->
+            <h5>Ingredientes</h5>
             <div class="table-responsive">
-              <table
-                class="table table-sm"
-                aria-label="Tabela de ingredientes da receita"
-              >
-                <caption>
-                  Lista detalhada de ingredientes com suas quantidades, unidades
-                  e custos individuais.
-                </caption>
-                <thead class="table-light">
+              <table class="table table-sm table-striped">
+                <thead>
                   <tr>
-                    <th scope="col">Ingrediente</th>
-                    <th scope="col">Quantidade</th>
-                    <th scope="col">Unidade</th>
-                    <th scope="col">Custo</th>
+                    <th>Ingrediente</th>
+                    <th>Quantidade</th>
+                    <th>Unidade</th>
+                    <th>Custo</th>
                   </tr>
                 </thead>
-                <tbody id="ingredientesModal">
+                <tbody id="ingredientesLista">
                   <tr>
-                    <td colspan="4" class="text-center text-muted">
-                      Nenhum ingrediente listado.
-                    </td>
+                    <td colspan="4" class="text-center text-muted">Nenhum ingrediente listado.</td>
                   </tr>
                 </tbody>
               </table>
@@ -327,15 +302,16 @@
 
             <hr />
 
-            <h3>Modo de Preparo</h3>
+            <!-- Modo de Preparo -->
+            <h5>Modo de Preparo</h5>
             <div
-              id="modoPreparoModal"
+              id="modoPreparoDetalhe"
               class="border p-3 bg-light rounded"
-              aria-label="Instruções detalhadas do modo de preparo da receita"
             >
               <p class="text-muted">Nenhum modo de preparo disponível.</p>
             </div>
           </div>
+
           <div class="modal-footer">
             <button
               type="button"
@@ -348,7 +324,6 @@
               type="button"
               class="btn btn-primary"
               onclick="editarReceita()"
-              aria-label="Abrir formulário para editar esta receita"
             >
               Editar Receita
             </button>
@@ -356,7 +331,7 @@
         </div>
       </div>
     </div>
-
+    
     <div
       class="modal fade"
       id="modalEditarReceita"
