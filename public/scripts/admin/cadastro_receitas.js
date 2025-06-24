@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const db = firebase.firestore();
 
   var ingredientes = await pegarIngredientes();
-  var estoque = await pegarEstoque();
+  // var estoque = await pegarEstoque();
   const selectIngredientes = document.getElementById("ingredienteSelecionado");
 
   document
@@ -103,13 +103,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function salvarReceita(data) {
     try {
-      const docRef = await addDoc(collection(db, "receitas"), data);
-      console.log("Documento escrito com ID: ", docRef.id);
+      const docRef = await firebase.firestore().collection("receitas").add(data);
+      console.log("Documento escrito com ID:", docRef.id);
       return true;
     } catch (e) {
-      console.error("Erro ao adicionar documento: ", e);
+      console.error("Erro ao adicionar documento:", e);
       alert("Erro ao salvar receita. Tente novamente.");
       return false;
     }
   }
+
 });
