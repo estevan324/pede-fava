@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const db = firebase.firestore();
+  document.getElementById("btnEditarReceita").addEventListener("click", editarReceita); 
+  document.getElementById("btnSalvarAlteracoes").addEventListener("click", salvarEdicaoReceita);
 
   firebase.auth().onAuthStateChanged((user) => {
     if (!user) {
@@ -168,6 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   async function verReceita(id) {
+    window.receitaVisualizadaId = id;
     try {
       const doc = await db.collection("receitas").doc(id).get();
       if (!doc.exists) {
@@ -230,6 +233,74 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Erro ao carregar receita:", error);
       alert("Erro ao carregar a receita.");
+    }
+  }
+
+  async function salvarEdicaoReceita() {
+    const id = document.getElementById("editarReceitaId").value;
+    const nomeReceita = document.getElementById("editarNomeReceita").value.trim();
+    const descricao = document.getElementById("editarDescricaoReceita").value.trim();
+    const tempoPreparo = parseInt(document.getElementById("editarTempoReceita").value);
+    const rendimento = parseInt(document.getElementById("editarRendimentoReceita").value);
+    const categoriaReceita = document.getElementById("editarCategoriaReceita").value;
+    const modoPreparo = document.getElementById("editarModoPreparoReceita").value.trim();
+
+    if (!nomeReceita || !tempoPreparo || !rendimento || !categoriaReceita || !modoPreparo) {
+      alert("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    try {
+      await firebase.firestore().collection("receitas").doc(id).update({
+        nomeReceita,
+        descricao,
+        tempoPreparo,
+        rendimento,
+        categoriaReceita,
+        modoPreparo
+      });
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarReceita"));
+      modal.hide();
+
+      alert("Receita atualizada com sucesso.");
+      exibirReceitasNaTabela(firebase.firestore());
+    } catch (error) {
+      console.error("Erro ao salvar edição da receita:", error);
+      alert("Erro ao salvar a receita. Tente novamente.");
+    }
+  }
+
+  async function editarReceita() {
+    const receitaId = window.receitaVisualizadaId;
+    if (!receitaId) {
+      alert("Receita ainda não foi carregada.");
+      return;
+    }
+
+    try {
+      const doc = await firebase.firestore().collection("receitas").doc(receitaId).get();
+
+      if (!doc.exists) {
+        alert("Receita não encontrada!");
+        return;
+      }
+
+      const receita = doc.data();
+
+      document.getElementById("editarReceitaId").value = receitaId;
+      document.getElementById("editarNomeReceita").value = receita.nomeReceita || "";
+      document.getElementById("editarDescricaoReceita").value = receita.descricao || "";
+      document.getElementById("editarTempoReceita").value = receita.tempoPreparo || "";
+      document.getElementById("editarRendimentoReceita").value = receita.rendimento || "";
+      document.getElementById("editarCategoriaReceita").value = receita.categoriaReceita || "";
+      document.getElementById("editarModoPreparoReceita").value = receita.modoPreparo || "";
+
+      const modalEditar = new bootstrap.Modal(document.getElementById("modalEditarReceita"));
+      modalEditar.show();
+    } catch (error) {
+      console.error("Erro ao carregar receita para edição:", error);
+      alert("Erro ao carregar receita para edição.");
     }
   }
 
