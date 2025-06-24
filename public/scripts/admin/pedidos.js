@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           row.insertCell(1).textContent = pedido.receita.nome;
           row.insertCell(2).textContent = pedido.proporcao;
           row.insertCell(3).textContent = pedido.dataEntrega;
-          row.insertCell(4).textContent = pedido.valorTotal;
+          row.insertCell(4).textContent = `R$ ${pedido.valorTotal}`;
 
           // Status com span para estilização
           const statusCell = row.insertCell(5);
