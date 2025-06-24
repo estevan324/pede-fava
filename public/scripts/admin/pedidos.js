@@ -54,9 +54,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         .reduce((acc, p) => acc + Number(p.valorTotal || 0), 0);
 
       // Atualiza os elementos na página
-      document.getElementById("contadorFaturados").textContent = pedidosFaturados;
-      document.getElementById("contadorEmAndamento").textContent = pedidosEmAndamento;
-      document.getElementById("valorFaturado").textContent = valorTotalFaturado.toFixed(2);
+      document.getElementById("contadorFaturados").textContent =
+        pedidosFaturados;
+      document.getElementById("contadorEmAndamento").textContent =
+        pedidosEmAndamento;
+      document.getElementById("valorFaturado").textContent =
+        valorTotalFaturado.toFixed(2);
 
       if (pedidos.length > 0) {
         pedidos.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -91,21 +94,27 @@ document.addEventListener("DOMContentLoaded", async () => {
               <button class="btn btn-sm btn-danger btn-excluir" data-id="${pedido.id}">Excluir</button>
             `;
 
-            actionsCell.querySelector(".btn-excluir").addEventListener("click", () => {
-              excluirPedido(pedido.id);
-            });
+            actionsCell
+              .querySelector(".btn-excluir")
+              .addEventListener("click", () => {
+                excluirPedido(pedido.id);
+              });
           } else {
             // Botões normais para status que não são faturados
             actionsCell.innerHTML = `
               <button class="btn btn-sm btn-info me-2 btn-faturar" data-id="${pedido.id}">Faturar</button>
               <button class="btn btn-sm btn-danger btn-excluir" data-id="${pedido.id}">Excluir</button>
             `;
-            actionsCell.querySelector(".btn-excluir").addEventListener("click", () => {
-              excluirPedido(pedido.id);
-            });
-            actionsCell.querySelector(".btn-faturar").addEventListener("click", () => {
-              faturarPedido(pedido.id);
-            });
+            actionsCell
+              .querySelector(".btn-excluir")
+              .addEventListener("click", () => {
+                excluirPedido(pedido.id);
+              });
+            actionsCell
+              .querySelector(".btn-faturar")
+              .addEventListener("click", () => {
+                faturarPedido(pedido.id);
+              });
           }
         });
       } else {
@@ -172,7 +181,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         parseFloat(ingrediente.quantidade) * proporcao;
 
       ingredientesNecessarios.innerHTML += `
-                <div class="col-md-6 col-sm-4 mb-2">
+                <div class="col-md-6 col-4 mb-2">
                     <input
                         type="text"
                         class="form-control"
@@ -180,7 +189,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         readonly
                     />
                 </div>
-                <div class="col-md-3 col-sm-4 mb-2">
+                <div class="col-md-3 col-4 mb-2">
                     <input
                         type="number"
                         class="form-control"
@@ -188,7 +197,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         readonly
                     />
                 </div>
-                <div class="col-md-3 col-sm-4 mb-2">
+                <div class="col-md-3 col-4 mb-2">
                     <input
                         type="text"
                         class="form-control"
@@ -213,8 +222,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const clienteDoc = await firebase.firestore().collection("clientes").doc(clienteId).get();
-      const receitaDoc = await firebase.firestore().collection("receitas").doc(receitaId).get();
+      const clienteDoc = await firebase
+        .firestore()
+        .collection("clientes")
+        .doc(clienteId)
+        .get();
+      const receitaDoc = await firebase
+        .firestore()
+        .collection("receitas")
+        .doc(receitaId)
+        .get();
 
       const clienteData = clienteDoc.data();
       const receitaData = receitaDoc.data();
@@ -238,11 +255,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       await firebase.firestore().collection("pedidos").add(novoPedido);
 
       await getPedidosAndDisplay();
-      const modal = bootstrap.Modal.getInstance(document.getElementById("cadastrarPedido"));
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("cadastrarPedido")
+      );
       modal.hide();
 
       document.getElementById("formPedido").reset();
-      document.getElementById("ingredientesNecessarios").innerHTML = `<p class="text-muted col-12">Os ingredientes necessários serão listados aqui após selecionar uma receita.</p>`;
+      document.getElementById(
+        "ingredientesNecessarios"
+      ).innerHTML = `<p class="text-muted col-12">Os ingredientes necessários serão listados aqui após selecionar uma receita.</p>`;
 
       alert("Pedido salvo com sucesso!");
     } catch (error) {
@@ -265,14 +286,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   await Promise.all([getClientes(), getReceitas(), getPedidosAndDisplay()]);
-  document.getElementById("btnSalvarPedido").addEventListener("click", salvarPedido);
+  document
+    .getElementById("btnSalvarPedido")
+    .addEventListener("click", salvarPedido);
 
   async function excluirPedido(id) {
     const confirmado = confirm("Tem certeza que deseja excluir este pedido?");
     if (!confirmado) return;
-  
+
     try {
-      const pedidoDoc = await firebase.firestore().collection("pedidos").doc(id).get();
+      const pedidoDoc = await firebase
+        .firestore()
+        .collection("pedidos")
+        .doc(id)
+        .get();
       if (!pedidoDoc.exists) {
         alert("Pedido não encontrado.");
         return;
@@ -293,23 +320,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function faturarPedido(idPedido) {
-  const confirmado = confirm("Deseja realmente faturar este pedido?");
+    const confirmado = confirm("Deseja realmente faturar este pedido?");
 
-  if (!confirmado) return;
+    if (!confirmado) return;
 
-  try {
-    const pedidoRef = db.collection("pedidos").doc(idPedido);
+    try {
+      const pedidoRef = db.collection("pedidos").doc(idPedido);
 
-    await pedidoRef.update({
-      status: STATUS_FATURADO,
-    });
+      await pedidoRef.update({
+        status: STATUS_FATURADO,
+      });
 
-    alert("Pedido faturado com sucesso!");
-    await getPedidosAndDisplay(); // Atualiza a tabela para refletir o novo status
-  } catch (error) {
-    console.error("Erro ao faturar pedido:", error);
-    alert("Erro ao faturar pedido. Verifique o console.");
+      alert("Pedido faturado com sucesso!");
+      await getPedidosAndDisplay(); // Atualiza a tabela para refletir o novo status
+    } catch (error) {
+      console.error("Erro ao faturar pedido:", error);
+      alert("Erro ao faturar pedido. Verifique o console.");
+    }
   }
-}
-
 });

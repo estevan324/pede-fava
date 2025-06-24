@@ -5,6 +5,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // var estoque = await pegarEstoque();
   const selectIngredientes = document.getElementById("ingredienteSelecionado");
 
+  const unidadeIngredienteInput = document.getElementById("unidadeIngrediente");
+  const ingredienteSelecionadoSelect = document.getElementById(
+    "ingredienteSelecionado"
+  );
+
   document
     .getElementById("formReceita")
     .addEventListener("submit", async (event) => {
@@ -27,8 +32,18 @@ document.addEventListener("DOMContentLoaded", async () => {
           nome: tds[0].textContent.trim(),
           quantidade: parseFloat(tds[1].textContent.trim()),
           unidade: tds[2].textContent.trim(),
-          precoUnitario: parseFloat(tds[3].textContent.replace(/[^\d.,]/g, "").replace(",", ".").trim()),
-          custoTotal: parseFloat(tds[4].textContent.replace(/[^\d.,]/g, "").replace(",", ".").trim()),
+          precoUnitario: parseFloat(
+            tds[3].textContent
+              .replace(/[^\d.,]/g, "")
+              .replace(",", ".")
+              .trim()
+          ),
+          custoTotal: parseFloat(
+            tds[4].textContent
+              .replace(/[^\d.,]/g, "")
+              .replace(",", ".")
+              .trim()
+          ),
         });
       });
 
@@ -107,6 +122,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return ingredientes;
   }
 
+  ingredienteSelecionadoSelect.addEventListener("change", (e) => {
+    const ingrediente = ingredientes.find((i) => i.id === e.target.value);
+
+    unidadeIngredienteInput.value = ingrediente.unidadeMedida;
+  });
+
   async function pegarEstoque() {
     const querySnapshot = await db.collection("movimentacoesEstoque").get();
     var estoque = [];
@@ -122,7 +143,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function salvarReceita(data) {
     try {
-      const docRef = await firebase.firestore().collection("receitas").add(data);
+      const docRef = await firebase
+        .firestore()
+        .collection("receitas")
+        .add(data);
       console.log("Documento escrito com ID:", docRef.id);
       return true;
     } catch (e) {
@@ -131,5 +155,4 @@ document.addEventListener("DOMContentLoaded", async () => {
       return false;
     }
   }
-
 });
