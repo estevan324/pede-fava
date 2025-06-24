@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function exibirReceitasNaTabela(db, filtros = {}) {
     const receitas = await pegarReceitas(db, filtros);
+
     const tabela = document.getElementById("tabelaReceitas");
     const totalSpan = document.getElementById("totalReceitas");
     const estatisticaTotal = document.getElementById("estatisticaTotal");
@@ -41,15 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let somaTempo = 0;
 
     receitas.forEach((receita) => {
-      const {
-        id,
-        nomeReceita,
-        categoriaReceita,
-        tempoPreparo,
-        rendimento,
-        custoTotal = 0,
-        custoPorcao = 0,
-      } = receita;
+      const { id, nomeReceita, categoriaReceita, tempoPreparo, rendimento } =
+        receita;
+
+      const custoTotal = receita?.custoTotal || 0;
+      const custoPorcao = custoTotal / rendimento;
 
       const linha = document.createElement("tr");
       linha.innerHTML = `
@@ -78,17 +75,27 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    totalSpan.textContent = `${receitas.length} receita${receitas.length > 1 ? 's' : ''}`;
+    totalSpan.textContent = `${receitas.length} receita${
+      receitas.length > 1 ? "s" : ""
+    }`;
     estatisticaTotal.textContent = receitas.length;
 
-    document.getElementById("receitaMaisBarata").textContent = `R$ ${menorCusto.toFixed(2)}`;
-    document.getElementById("receitaMaisCara").textContent = `R$ ${maiorCusto.toFixed(2)}`;
-    document.getElementById("tempoMedio").textContent = `${Math.round(somaTempo / receitas.length)} min`;
+    document.getElementById(
+      "receitaMaisBarata"
+    ).textContent = `R$ ${menorCusto.toFixed(2)}`;
+    document.getElementById(
+      "receitaMaisCara"
+    ).textContent = `R$ ${maiorCusto.toFixed(2)}`;
+    document.getElementById("tempoMedio").textContent = `${Math.round(
+      somaTempo / receitas.length
+    )} min`;
 
     document.querySelectorAll(".btn-excluir").forEach((botao) => {
       botao.addEventListener("click", async () => {
         const id = botao.getAttribute("data-id");
-        const confirmado = confirm("Tem certeza que deseja excluir esta receita?");
+        const confirmado = confirm(
+          "Tem certeza que deseja excluir esta receita?"
+        );
         if (confirmado) {
           await excluirReceita(id);
           exibirReceitasNaTabela(db, filtros);
@@ -140,14 +147,20 @@ document.addEventListener("DOMContentLoaded", () => {
     exibirReceitasNaTabela(db, filtros);
   }
 
-  document.getElementById("btnBuscarReceita").addEventListener("click", aplicarFiltros);
+  document
+    .getElementById("btnBuscarReceita")
+    .addEventListener("click", aplicarFiltros);
   inputBuscar.addEventListener("keyup", (e) => {
     if (e.key === "Enter") aplicarFiltros();
   });
   selectCategoria.addEventListener("change", aplicarFiltros);
   selectOrdenar.addEventListener("change", aplicarFiltros);
 
-  exibirReceitasNaTabela(db, { nomeBusca: "", categoriaFiltro: "", ordenarPor: "nome" });
+  exibirReceitasNaTabela(db, {
+    nomeBusca: "",
+    categoriaFiltro: "",
+    ordenarPor: "nome",
+  });
 
   async function verReceita(id) {
     try {
@@ -158,14 +171,27 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const receita = doc.data();
 
-      document.getElementById("tituloVisualizarReceita").textContent = receita.nomeReceita || "Visualizar Receita";
-      document.getElementById("categoriaReceitaDetalhe").textContent = receita.categoriaReceita || "-";
-      document.getElementById("dificuldadeDetalhe").textContent = receita.dificuldade || "-";
-      document.getElementById("tempoPreparoDetalhe").textContent = receita.tempoPreparo || "-";
-      document.getElementById("rendimentoDetalhe").textContent = receita.rendimento || "-";
-      document.getElementById("custoTotalModal").textContent = receita.custoTotal ? `R$ ${Number(receita.custoTotal).toFixed(2)}` : "R$ 0,00";
-      document.getElementById("custoPorcaoModal").textContent = receita.custoPorcao ? `R$ ${Number(receita.custoPorcao).toFixed(2)}` : "R$ 0,00";
-      document.getElementById("observacoesDetalhe").textContent = receita.observacoes || "-";
+      const custoTotal = receita.custoTotal || 0;
+      const custoPorcao = custoTotal / receita.rendimento;
+
+      document.getElementById("tituloVisualizarReceita").textContent =
+        receita.nomeReceita || "Visualizar Receita";
+      document.getElementById("categoriaReceitaDetalhe").textContent =
+        receita.categoriaReceita || "-";
+      document.getElementById("dificuldadeDetalhe").textContent =
+        receita.dificuldade || "-";
+      document.getElementById("tempoPreparoDetalhe").textContent =
+        receita.tempoPreparo || "-";
+      document.getElementById("rendimentoDetalhe").textContent =
+        receita.rendimento || "-";
+      document.getElementById("custoTotalModal").textContent = `R$ ${Number(
+        custoTotal
+      ).toFixed(2)}`;
+      document.getElementById("custoPorcaoModal").textContent = `R$ ${Number(
+        custoPorcao
+      ).toFixed(2)}`;
+      document.getElementById("observacoesDetalhe").textContent =
+        receita.observacoes || "-";
 
       const tbody = document.getElementById("ingredientesLista");
       tbody.innerHTML = "";
@@ -190,11 +216,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const modoPreparoDiv = document.getElementById("modoPreparoDetalhe");
-      modoPreparoDiv.textContent = receita.modoPreparo || "Nenhum modo de preparo disponível.";
+      modoPreparoDiv.textContent =
+        receita.modoPreparo || "Nenhum modo de preparo disponível.";
 
-      const modal = new bootstrap.Modal(document.getElementById("modalVisualizarReceita"));
+      const modal = new bootstrap.Modal(
+        document.getElementById("modalVisualizarReceita")
+      );
       modal.show();
-
     } catch (error) {
       console.error("Erro ao carregar receita:", error);
       alert("Erro ao carregar a receita.");
@@ -211,5 +239,4 @@ document.addEventListener("DOMContentLoaded", () => {
       return false;
     }
   }
-
 });

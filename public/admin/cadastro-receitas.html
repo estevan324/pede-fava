@@ -27,7 +27,7 @@
             <div class="card-body">
               <form id="formReceita">
                 <div class="row mb-4">
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <label for="nomeReceita" class="form-label"
                       >Nome da Receita <span class="text-danger">*</span></label
                     >
@@ -44,7 +44,7 @@
                       O nome pelo qual a receita será identificada.
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <label for="categoriaReceita" class="form-label"
                       >Categoria <span class="text-danger">*</span></label
                     >
@@ -73,6 +73,23 @@
                       class="form-text visually-hidden"
                     >
                       A categoria culinária da receita.
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="custoTotal" class="form-label"
+                      >Custo Total <span class="text-danger">*</span></label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="custoTotal"
+                      name="custoTotal"
+                      required
+                      aria-required="true"
+                      aria-describedby="custoTotalHelp"
+                    />
+                    <div id="custoTotalHelp" class="form-text visually-hidden">
+                      O nome pelo qual a receita será identificada.
                     </div>
                   </div>
                 </div>
@@ -236,8 +253,6 @@
                             <th scope="col">Ingrediente</th>
                             <th scope="col">Quantidade</th>
                             <th scope="col">Unidade</th>
-                            <th scope="col">Preço Unit.</th>
-                            <th scope="col">Custo Total</th>
                             <th scope="col">Ações</th>
                           </tr>
                         </thead>

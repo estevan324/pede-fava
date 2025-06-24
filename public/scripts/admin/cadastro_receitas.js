@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .addEventListener("submit", async (event) => {
       event.preventDefault();
       const formData = new FormData(event.target);
+
       const receita = {};
       formData.forEach((value, key) => {
         receita[key] = value;
@@ -32,18 +33,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           nome: tds[0].textContent.trim(),
           quantidade: parseFloat(tds[1].textContent.trim()),
           unidade: tds[2].textContent.trim(),
-          precoUnitario: parseFloat(
-            tds[3].textContent
-              .replace(/[^\d.,]/g, "")
-              .replace(",", ".")
-              .trim()
-          ),
-          custoTotal: parseFloat(
-            tds[4].textContent
-              .replace(/[^\d.,]/g, "")
-              .replace(",", ".")
-              .trim()
-          ),
         });
       });
 
@@ -72,11 +61,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      const precoUnitario = parseFloat(
-        select.selectedOptions[0].dataset.preco || "0"
-      ); // Caso tenha
-      const custoTotal = (precoUnitario * quantidade).toFixed(2);
-
       const tbody = document.getElementById("listaIngredientesReceita");
 
       const linhaPlaceholder = document.getElementById("semIngredientes");
@@ -87,8 +71,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     <td>${nome}</td>
     <td>${quantidade}</td>
     <td>${unidade}</td>
-    <td>R$ ${precoUnitario.toFixed(2)}</td>
-    <td>R$ ${custoTotal}</td>
     <td>
       <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Remover</button>
     </td>
