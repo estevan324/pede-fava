@@ -40,7 +40,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       totalPedidosSpan.innerHTML = `${pedidos.length} pedidos`;
 
-      // Cálculo dos status e valor faturado
       const pedidosFaturados = pedidos.filter(
         (p) => p.status === STATUS_FATURADO
       ).length;
@@ -53,7 +52,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         .filter((p) => p.status === STATUS_FATURADO)
         .reduce((acc, p) => acc + Number(p.valorTotal || 0), 0);
 
-      // Atualiza os elementos na página
       document.getElementById("contadorFaturados").textContent =
         pedidosFaturados;
       document.getElementById("contadorEmAndamento").textContent =
@@ -73,7 +71,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           row.insertCell(3).textContent = pedido.dataEntrega;
           row.insertCell(4).textContent = `R$ ${pedido.valorTotal}`;
 
-          // Status com span para estilização
           const statusCell = row.insertCell(5);
           statusCell.innerHTML = `<span class="badge ${
             pedido.status === STATUS_FATURADO
@@ -86,7 +83,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           const actionsCell = row.insertCell(6);
 
           if (pedido.status === STATUS_FATURADO) {
-            // Botão somente indicando faturado, desabilitado ou só visual
             actionsCell.innerHTML = `
               <button class="btn btn-sm btn-success" disabled>
                 Faturado
@@ -100,7 +96,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 excluirPedido(pedido.id);
               });
           } else {
-            // Botões normais para status que não são faturados
             actionsCell.innerHTML = `
               <button class="btn btn-sm btn-info me-2 btn-faturar" data-id="${pedido.id}">Faturar</button>
               <button class="btn btn-sm btn-danger btn-excluir" data-id="${pedido.id}">Excluir</button>
@@ -332,7 +327,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       alert("Pedido faturado com sucesso!");
-      await getPedidosAndDisplay(); // Atualiza a tabela para refletir o novo status
+      await getPedidosAndDisplay();
     } catch (error) {
       console.error("Erro ao faturar pedido:", error);
       alert("Erro ao faturar pedido. Verifique o console.");

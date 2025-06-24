@@ -78,7 +78,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       tbody.appendChild(tr);
 
-      // Limpar campos
       select.value = "";
       document.getElementById("quantidadeIngrediente").value = "";
       document.getElementById("unidadeIngrediente").value = "";
