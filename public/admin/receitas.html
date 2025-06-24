@@ -136,16 +136,12 @@
               </thead>
               <tbody id="tabelaReceitas">
                 <tr>
-                  <td colspan="7" class="text-center text-muted">
-                    Nenhuma receita cadastrada ainda.
-                    <br />
-                    <a
-                      href="cadastro-receitas.html"
-                      class="btn btn-primary btn-sm mt-2"
-                      aria-label="Cadastrar sua primeira receita"
-                    >
-                      Cadastrar Primeira Receita
-                    </a>
+                  <td colspan="7" class="text-center text-muted py-5">
+                    <div class="spinner-border text-dark" role="status">
+                      <span class="visually-hidden"
+                        >Carregando receitas...</span
+                      >
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -255,11 +251,13 @@
                 </p>
                 <p>
                   <strong>Tempo de Preparo:</strong>
-                  <span id="tempoPreparoDetalhe" class="text-muted"></span> minutos
+                  <span id="tempoPreparoDetalhe" class="text-muted"></span>
+                  minutos
                 </p>
                 <p>
                   <strong>Rendimento:</strong>
-                  <span id="rendimentoDetalhe" class="text-muted"></span> porções
+                  <span id="rendimentoDetalhe" class="text-muted"></span>
+                  porções
                 </p>
               </div>
               <div class="col-md-6">
@@ -289,12 +287,13 @@
                     <th>Ingrediente</th>
                     <th>Quantidade</th>
                     <th>Unidade</th>
-                    <th>Custo</th>
                   </tr>
                 </thead>
                 <tbody id="ingredientesLista">
                   <tr>
-                    <td colspan="4" class="text-center text-muted">Nenhum ingrediente listado.</td>
+                    <td colspan="4" class="text-center text-muted">
+                      Nenhum ingrediente listado.
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -304,10 +303,7 @@
 
             <!-- Modo de Preparo -->
             <h5>Modo de Preparo</h5>
-            <div
-              id="modoPreparoDetalhe"
-              class="border p-3 bg-light rounded"
-            >
+            <div id="modoPreparoDetalhe" class="border p-3 bg-light rounded">
               <p class="text-muted">Nenhum modo de preparo disponível.</p>
             </div>
           </div>
@@ -331,7 +327,7 @@
         </div>
       </div>
     </div>
-    
+
     <div
       class="modal fade"
       id="modalEditarReceita"

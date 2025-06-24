@@ -24,12 +24,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (receitas.length === 0) {
       tabela.innerHTML = `
         <tr>
-          <td colspan="7" class="text-center text-muted">
-            Nenhuma receita cadastrada ainda.<br />
-            <a href="cadastro-receitas.html" class="btn btn-primary btn-sm mt-2">
-              Cadastrar Primeira Receita
-            </a>
-          </td>
+            <td colspan="7" class="text-center text-muted">
+              Nenhuma receita cadastrada ainda.
+              <br />
+              <a
+                href="cadastro-receitas.html"
+                class="btn btn-primary btn-sm mt-2"
+                aria-label="Cadastrar sua primeira receita"
+              >
+                Cadastrar Primeira Receita
+              </a>
+            </td>
         </tr>
       `;
       totalSpan.textContent = "0 receitas";
@@ -209,7 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${ingrediente.nome || "-"}</td>
             <td>${ingrediente.quantidade ?? "-"}</td>
             <td>${ingrediente.unidade || "-"}</td>
-            <td>R$ ${Number(ingrediente.custoTotal ?? 0).toFixed(2)}</td>
           `;
           tbody.appendChild(tr);
         });
